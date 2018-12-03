@@ -33,6 +33,7 @@
 
 # Other
 .vscode/
+*.code-workspace
 
 # Project output
 P3Tests/*.dbg
