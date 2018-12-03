@@ -9,7 +9,7 @@ string nameof [] = {"unknown", "integer", "real", "string", "list"};
 
 Object::Object()
 {
-	type = NONE;
+	type = NONE_;
 	intval = realval = 0;
 }
 
@@ -31,7 +31,7 @@ Object::Object (const double & value)
 
 Object::Object (const string & value)
 {
-	type = NONE;
+	type = NONE_;
 	int sgn = 0, num = 0, dp = 0;
 	if (value.length() > 1 && (value[0] == '+' || value[0] == '-'))
 		sgn++;
@@ -45,7 +45,7 @@ Object::Object (const string & value)
 			*this = Object (atoi (value.c_str()));
 		else if (dp == 1)
 			*this = Object (atof (value.c_str()));
-	if (type != NONE)
+	if (type != NONE_)
 		return;
 	int i = 0;
 	while (isspace(value[i]))
@@ -654,7 +654,7 @@ Object::Object (stringstream & ss)
 			if (astring.size() > 0)
 				temp = Object (astring);
 		}
-		if (temp.type != NONE)
+		if (temp.type != NONE_)
 		{
 			debug << "Adding " << temp << " to LIST Object\n";
 			listval.push_back (temp);

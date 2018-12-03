@@ -33,3 +33,9 @@
 
 # Other
 .vscode/
+
+# Project output
+P3Tests/*.dbg
+P3Tests/*.lst
+P3Tests/*.p1
+P3Tests/*.p2

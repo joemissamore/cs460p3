@@ -8,7 +8,7 @@
 #include <vector>
 using namespace std;
 
-enum obj_type {NONE, INT, REAL, STRING, LIST};
+enum obj_type {NONE_, INT, REAL, STRING, LIST};
 	
 class Object
 {

@@ -74,8 +74,10 @@ class SyntacticalAnalyzer
     public:
 	SyntacticalAnalyzer (char * filename);
 	~SyntacticalAnalyzer ();
+    int GetErrs() { return totalErrs; }
 
     private:
+    int totalErrs;
 	LexicalAnalyzer * lex;
 	token_type token;
     ofstream p2file;

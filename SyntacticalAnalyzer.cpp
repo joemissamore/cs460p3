@@ -75,8 +75,9 @@ SyntacticalAnalyzer::SyntacticalAnalyzer (char * filename)
     p2file.open(p2FileName);
 
     token = lex->GetToken();
-    int ttlErrs = program ();
-    cout << "Total syntax errors: " << ttlErrs << endl;
+    totalErrs = 0;
+    totalErrs = program ();
+    cout << "Total syntax errors: " << totalErrs << endl;
 
 }
 

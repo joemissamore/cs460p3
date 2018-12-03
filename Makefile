@@ -1,4 +1,5 @@
 P3DEPENDENCIES = Project3.o Object.o CodeGenerator.o SyntacticalAnalyzer.o LexicalAnalyzer.o SetLimits.o
+CLEANEXT = *.p1 *.p2 *.lst *.dbg
 
 Project3.out : ${P3DEPENDENCIES}
 	g++ -g -o Project3.out ${P3DEPENDENCIES}
@@ -9,7 +10,7 @@ Test.out : Test.o Object.o
 Test.o : Test.cpp
 	g++ -g -c Test.cpp
 
-Project3.o : Project3.cpp Object.h SetLimits.h
+Project3.o : Project3.cpp Object.h SetLimits.h CodeGenerator.h SyntacticalAnalyzer.h
 	g++ -g -c Project3.cpp
 
 Object.o : Object.cpp Object.h
@@ -29,3 +30,7 @@ SetLimits.o : SetLimits.cpp SetLimits.h
 
 clean: 
 	rm -f *.o *.out
+
+cleanTests:
+	cd P3Tests
+	rm -f ${CLEANEXT}
