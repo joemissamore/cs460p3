@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <fstream>
-#include "LexicalAnalyzer.h"
+#include "CodeGenerator.h"
 
 using namespace std;
 
@@ -74,13 +74,16 @@ class SyntacticalAnalyzer
     public:
 	SyntacticalAnalyzer (char * filename);
 	~SyntacticalAnalyzer ();
+    // TODO: Is this ok?
     int GetErrs() { return totalErrs; }
 
     private:
     int totalErrs;
 	LexicalAnalyzer * lex;
+    CodeGen * codeGen;
 	token_type token;
     ofstream p2file;
+    string lexeme;
 
     /* Token mapper */
     map <token_type, tokenMapper> row; 
@@ -109,6 +112,14 @@ class SyntacticalAnalyzer
     void printP2Exiting(const string &funkyName, const string &token);
     bool isValidToken(functionRuleNumberMapping fMap);
     void validateToken(functionRuleNumberMapping fMap);
+
+    /* Helper functions - CodeGen */
+    void GetTokLex();
+    void PLUS();
+
+    /* Debugging */
+	void Debug(string functionName);
+	template<typename A> void PrintQ(A q);
 };
 	
 #endif

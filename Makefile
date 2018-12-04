@@ -10,16 +10,16 @@ Test.out : Test.o Object.o
 Test.o : Test.cpp
 	g++ -g -c Test.cpp
 
-Project3.o : Project3.cpp Object.h SetLimits.h CodeGenerator.h SyntacticalAnalyzer.h
+Project3.o : Project3.cpp Object.h SetLimits.h SyntacticalAnalyzer.h
 	g++ -g -c Project3.cpp
 
 Object.o : Object.cpp Object.h
 	g++ -g -c Object.cpp
 
-CodeGenerator.o : CodeGenerator.cpp CodeGenerator.h LexicalAnalyzer.h
+CodeGenerator.o : CodeGenerator.cpp CodeGenerator.h LexicalAnalyzer.h 
 	g++ -g -c CodeGenerator.cpp
 
-SyntacticalAnalyzer.o : SyntacticalAnalyzer.cpp SyntacticalAnalyzer.h LexicalAnalyzer.h
+SyntacticalAnalyzer.o : SyntacticalAnalyzer.cpp SyntacticalAnalyzer.h CodeGenerator.h #LexicalAnalyzer.h
 	g++ -g -c SyntacticalAnalyzer.cpp
 
 LexicalAnalyzer.o : LexicalAnalyzer.cpp LexicalAnalyzer.h

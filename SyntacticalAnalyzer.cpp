@@ -2,6 +2,8 @@
 #include <iomanip>
 #include <fstream>
 #include "SyntacticalAnalyzer.h"
+#define DEBUG 1
+#define debug if (DEBUG) cout
 
 using namespace std;
 /* Corresponding rows values.
@@ -27,6 +29,8 @@ static int syntacticalRuleNumbers [][34] =
 
 SyntacticalAnalyzer::SyntacticalAnalyzer (char * filename)
 {	
+
+    codeGen = new CodeGen(filename);
     /* Initializing mapping values
      * for tokens.
      * row[token_T] -> token_M */
@@ -85,6 +89,7 @@ SyntacticalAnalyzer::~SyntacticalAnalyzer ()
 {
     p2file.close();
     delete lex;
+    delete codeGen;
 }
 
 void SyntacticalAnalyzer::writeLstExpected(const token_type token) {
@@ -186,6 +191,9 @@ int SyntacticalAnalyzer::program(){
         writeLstExpected(EOF_T);
     }
 
+    codeGen->WriteCode(1, "return 0;\n");
+	codeGen->WriteCode(0, "}");
+    Debug("Program() - exiting function");
     printP2Exiting("Program", lex->GetTokenName(token));
     return errors;
 }
@@ -194,6 +202,7 @@ int SyntacticalAnalyzer::stmt(){
     int errors = 0;
     printP2File("Stmt", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(STMT_F);
+    Debug("Stmt()");
 
     if(token==IDENT_T){
         printP2FileUsing("8");
@@ -355,7 +364,17 @@ int SyntacticalAnalyzer::define(){
         }
 
         if(token==IDENT_T)
+        {
             token = lex->GetToken();
+            if (lexeme == "main")
+            {
+                codeGen->WriteCode(0, 
+                    "int main("
+                );
+            }
+            
+        }
+            
         else 
         {
             errors++;
@@ -365,7 +384,11 @@ int SyntacticalAnalyzer::define(){
         errors += param_list();
 
         if(token==RPAREN_T)
+        {
+            codeGen->WriteCode(0, ")\n{\n");
             token = lex->GetToken();
+        }
+            
         else
         {
             errors++;
@@ -373,7 +396,9 @@ int SyntacticalAnalyzer::define(){
         }
 
         errors += stmt();
+        Debug("Define() - exited Stmt()");
         errors += stmt_list();
+        Debug("Define() - exited Stmt_List()");
 
         if (token == RPAREN_T)
             token = lex->GetToken();
@@ -399,6 +424,7 @@ int SyntacticalAnalyzer::action() {
     int errors = 0;
     printP2File("Action", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(ACTION_F);
+    Debug("Action()");
 
     switch (token) {
 
@@ -488,6 +514,7 @@ int SyntacticalAnalyzer::action() {
             break;
 
         case PLUS_T:
+            PLUS();
             printP2FileUsing("36");
             token = lex->GetToken();
             errors += stmt_list();
@@ -564,11 +591,14 @@ int SyntacticalAnalyzer::action() {
 
         case DISPLAY_T:
             printP2FileUsing("48");
+            codeGen->WriteCode(1, "cout << ");
             token = lex->GetToken();
             errors += stmt();
             break;
 
         case NEWLINE_T:
+            Debug("Action() - NEWLINE_T");
+            codeGen->WriteCode(1, "cout << endl;\n");
             printP2FileUsing("49");
             token = lex->GetToken();
             break;
@@ -797,12 +827,17 @@ int SyntacticalAnalyzer::stmt_pair() {
 }
 
 // Function "param_list" attempts to apply rules 16-17.
+/* Might need a flag to be able to check if its the first
+ * time through this function */
 int SyntacticalAnalyzer::param_list() {
     int errors = 0;
     printP2File("Param_List", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(PARAM_LIST_F);
+    Debug("Param_List()");
 
-    if (token == IDENT_T) {
+    if (token == IDENT_T) 
+    {
+        codeGen->WriteCode(0, lex->GetLexeme() + " ");
         printP2FileUsing("16");
         token = lex->GetToken(); 
         errors += param_list();
@@ -984,4 +1019,106 @@ void SyntacticalAnalyzer::validateToken(functionRuleNumberMapping fMap)
      * there is nothing to advance */
     while (!isValidToken(fMap) && token != EOF_T)
         token = lex->GetToken();
+}
+
+
+void SyntacticalAnalyzer::GetTokLex()
+{
+	token = lex->GetToken();
+	lexeme = lex->GetLexeme();
+}
+
+void SyntacticalAnalyzer::PLUS()
+{
+	Debug("PLUS()");
+	/* By the time this function is 
+	 * entered the number of LPAREN_T
+	 * will be 1 and we will have also
+	 * passed a '+' so this will be added
+	 * to the queue. 
+	 * 
+	 * TODO: Make this for all arithmetic */
+
+	queue<string> vals;
+	queue<string> symbols;
+	symbols.push("+");
+	int numLPAREN_T = 1;
+	int numRPARENT_T = 0;
+
+	/* Assuming no syntax/lexical errs */
+	while (numLPAREN_T != numRPARENT_T)
+	{
+		if (token == PLUS_T)
+		{
+			symbols.push("+");
+			GetTokLex();
+		}
+			
+		if (token == NUMLIT_T)
+		{
+			Debug("NUMLIT_T");
+			vals.push(lexeme);
+			GetTokLex();
+		}
+
+		if (token == LPAREN_T)
+		{
+			numLPAREN_T++;
+			GetTokLex();
+		}
+
+		if (token == RPAREN_T)
+		{
+			numRPARENT_T++;
+			// GetTokLex();
+		}
+
+		
+	}
+	
+	PrintQ(symbols);
+	PrintQ(vals);
+	// debug << "Exited while loop" << endl;
+
+	for (int i = 0; !vals.empty(); i++)
+	{
+		if (i % 2 == 0)
+		{
+			string str = "Object(" + vals.front() + ")";
+			codeGen->WriteCode(0, str);
+			vals.pop();
+			if (vals.size() != 0)
+				codeGen->WriteCode(0, " ");
+		}
+		else 
+		{
+			codeGen->WriteCode(0, symbols.front() + " ");
+			symbols.pop();
+		}
+		
+	}
+	codeGen->WriteCode(0, ";\n");
+
+}
+
+/* Debugging */
+void SyntacticalAnalyzer::Debug(string function)
+{
+	debug << "-------------------------------" << endl;
+	debug << "Inside: " << function << endl;
+	debug << "Token name: " + lex->GetTokenName(token) << endl;
+	debug << "Lexeme: " + lex->GetLexeme() << endl;
+	debug << "-------------------------------" << endl;
+}
+
+template<typename A> void SyntacticalAnalyzer::PrintQ(A q)
+{
+	debug << "-------------------------------" << endl;
+	debug << "Printing Queue..." << endl;
+	while (!q.empty())
+	{
+		debug << q.front() << endl;
+		q.pop();
+	}
+	debug << "-------------------------------" << endl;
 }

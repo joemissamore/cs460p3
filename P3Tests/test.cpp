@@ -4,7 +4,7 @@
 #include "Object.h"
 using namespace std;
 
-int main()
+)
 {
 	cout << Object(12) + Object(5);
 	cout << endl;

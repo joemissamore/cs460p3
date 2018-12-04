@@ -4,7 +4,7 @@
 
 #include "Object.h"
 #include "SetLimits.h"
-#include "CodeGenerator.h"
+// #include "CodeGenerator.h"
 #include "SyntacticalAnalyzer.h"
 
 using namespace std;
@@ -15,26 +15,9 @@ int main (int argc, char ** argv)
 	{
 		printf("format: %s <filename>\n", argv[0]);
 		exit(1);
-	}
-	
-	// TODO: SetLimits before turning in?
-	// Uncomment this when submitting
-	// SetLimits();
+	}	
 
-	// TODO: Incorporate SyntacticalAnalyzer
-	// returns errors on test.ss - because
-	// expecting (main) at the end of the
-	// file.
-	// SyntacticalAnalyzer parse (argv[1]);
-	// if (parse.GetErrs() == 0)
-	// {
-		LexicalAnalyzer * lex; 
-		lex = new LexicalAnalyzer(argv[1]);
-		CodeGen(argv[1], lex);
-	// }
-	
-
-
+	SyntacticalAnalyzer parse(argv[1]);
 
 	return 0;
 }
