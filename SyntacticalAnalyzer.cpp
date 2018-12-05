@@ -1054,7 +1054,7 @@ void SyntacticalAnalyzer::PLUS()
 	symbols.push("+");
 	int numLPAREN_T = 1;
 	int numRPARENT_T = 0;
-
+	cout << "Token at this point: " << lex->GetLexeme() << endl;
 	/* Assuming no syntax/lexical errs */
 	while (numLPAREN_T != numRPARENT_T)
 	{
@@ -1132,3 +1132,62 @@ template<typename A> void SyntacticalAnalyzer::PrintQ(A q)
 	}
 	debug << "-------------------------------" << endl;
 }
+
+/*
+void SyntacticalAnalyzer::arithmetic() {
+    Debug("ARITHMETIC()");
+    codeGen->WriteCode(0, arith_helper());
+}
+
+string SyntacticalAnalyzer::arith_helper() {
+    Debug("ARITH_HELPER()");
+
+    string oper_sym = lex->GetLexeme(); // this function is called when an operator is seen
+    string operand_1 = "";
+    string operand_2 = "";
+
+    Debug(lex->GetLexeme);
+    GetTokLex(); // As we have already seen the operator
+    
+    if (token == NUMLIT_T) {
+        Debug("NUMLIT_T");
+        operand_1 = "Object " + " (" + lexeme + ") ";
+        GetTokLex(); // maybe move these to below first set of conditionals? 
+    } else if (token == LPAREN_T) {
+        Debug("LPAREN_T");
+        token = lex->GetToken(); // to grab next operator
+        operand_1 = "(" + arith_helper() +") ";
+        GetTokLex(); // move to next operand
+    } else if (token == IDENT_T){ // parameter
+        Debug("IDENT_T");
+        operand_1 = lexeme + " ";
+        GetTokLex();
+    } // else error?
+
+    if (token == NUMLIT_T) {
+        Debug("NUMLIT_T");
+        operand_2 = " Object" + " (" + lexeme +")";
+        GetTokLex();
+    }
+
+    else if (token == LPAREN_T) {
+        Debug("LPAREN_T");
+        token = lex->GetToken();
+        operand_2 = " (" + arith_helper() + ")";
+        GetTokLex();
+    }
+
+    else if (token == IDENT_T) { // parameter
+        Debug("IDENT_T");
+        operand_2 = " " + lexeme;
+        GetTokLex();
+    } // else error?
+
+    if (token == RPAREN_T) {
+        return operand_1 + oper_sym + operand_2;
+    } else {
+        Debug("No RPAREN_T found");
+        return "ERROR";
+    }
+}
+*/
