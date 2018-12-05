@@ -1094,7 +1094,7 @@ void SyntacticalAnalyzer::PLUS()
 	{
 		if (i % 2 == 0)
 		{
-		  string str = "Object " + objectName() + "(" + vals.front() + ")";
+		  string str = "Object (" + vals.front() + ")";
 			codeGen->WriteCode(0, str);
 			vals.pop();
 			if (vals.size() != 0)
