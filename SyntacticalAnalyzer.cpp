@@ -80,6 +80,7 @@ SyntacticalAnalyzer::SyntacticalAnalyzer (char * filename)
 
     token = lex->GetToken();
     totalErrs = 0;
+    objCount = 0;
     totalErrs = program ();
     cout << "Total syntax errors: " << totalErrs << endl;
 
@@ -132,6 +133,10 @@ void SyntacticalAnalyzer::printP2Exiting(const string &funkyName, const string &
     /* Format:
      * Exiting Program function; current token is: EOF_T */
     p2file << "Exiting " << funkyName << " function; current token is: " << tokenName << endl;
+}
+
+string SyntacticalAnalyzer::objectName() {
+  return "obj_" + to_string(objCount++);
 }
 
 /* All transition programs follow the same pattern.
@@ -365,13 +370,18 @@ int SyntacticalAnalyzer::define(){
 
         if(token==IDENT_T)
         {
-            token = lex->GetToken();
-            if (lexeme == "main")
+	  //            token = lex->GetToken();
+	  lexeme = lex->GetLexeme();
+	  if (lexeme == "main")
             {
                 codeGen->WriteCode(0, 
                     "int main("
                 );
-            }
+		token = lex->GetToken();
+            } else {
+	      codeGen->WriteCode(0, "Object " + lexeme + " (");
+	      token = lex->GetToken();
+	    }
             
         }
             
@@ -1084,7 +1094,7 @@ void SyntacticalAnalyzer::PLUS()
 	{
 		if (i % 2 == 0)
 		{
-			string str = "Object(" + vals.front() + ")";
+		  string str = "Object " + objectName() + "(" + vals.front() + ")";
 			codeGen->WriteCode(0, str);
 			vals.pop();
 			if (vals.size() != 0)

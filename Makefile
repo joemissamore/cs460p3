@@ -34,3 +34,4 @@ clean:
 cleanTests:
 	cd P3Tests
 	rm -f ${CLEANEXT}
+	cd ..
