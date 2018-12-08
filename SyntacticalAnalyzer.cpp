@@ -538,42 +538,42 @@ int SyntacticalAnalyzer::action() {
             break;
 
         case PLUS_T:
-	  arithmetic(); // i think we'll need to get rid of everything below ?
-	  /*
-	  printP2FileUsing("36");
+	       arithmetic(); // i think we'll need to get rid of everything below ?
+	       /*
+	       printP2FileUsing("36");
             token = lex->GetToken();
             errors += stmt_list();
-	  */            
-	  break;
+	       */            
+	       break;
 
         case MINUS_T:
-	  arithmetic();
-	  /*
+	       arithmetic();
+	       /*
             printP2FileUsing("37");
             token = lex->GetToken();
             errors += stmt();
             errors += stmt_list();
-	  */
-	  break;
+	       */
+	       break;
 
         case DIV_T:
-	  arithmetic();
-	  /*
+	       arithmetic();
+	       /*
             printP2FileUsing("38");
             token = lex->GetToken();
             errors += stmt();
             errors += stmt_list();
-	  */
-	  break;
+	       */
+	       break;
 
         case MULT_T:
-	  arithmetic();
-	  /*
-	  printP2FileUsing("39");
+	       arithmetic();
+	       /*
+	       printP2FileUsing("39");
             token = lex->GetToken();
             errors += stmt_list();
-	  */
-	  break;
+	       */
+	       break;
 
         case MODULO_T:
             printP2FileUsing("40");
@@ -1169,6 +1169,7 @@ void SyntacticalAnalyzer::arithmetic() {
 
 string SyntacticalAnalyzer::arith_helper() {
     Debug("ARITH_HELPER()");
+    cout << "Entered a_helper, current Lexeme: " << lexeme << endl;
     // so since this program is a code gen built on
     // top of a SynAnl, we need to write to .p2
     string oper_sym = "";
@@ -1206,108 +1207,117 @@ string SyntacticalAnalyzer::arith_helper() {
     
     if (token == NUMLIT_T) {
         Debug("NUMLIT_T");
-	// apply rule 10
-	// <literal> -> NUMLIT_T
-	printP2File("Stmt", lex->GetTokenName(token), lex->GetLexeme());
+	    // apply rule 10
+	    // <literal> -> NUMLIT_T
+	    printP2File("Stmt", lex->GetTokenName(token), lex->GetLexeme());
         printP2FileUsing("7");
-	printP2File("Literal", lex->GetTokenName(token), lex->GetLexeme());
-	printP2FileUsing("10");
+	    printP2File("Literal", lex->GetTokenName(token), lex->GetLexeme());
+	    printP2FileUsing("10");
    	
-	operand_1 = string("Object") + " (" + lexeme + ") ";
+	    operand_1 = string("Object (") + lexeme + ") ";
         GetTokLex(); // maybe move these to below first set of conditionals? 
 
-	printP2Exiting("Literal", lex->GetTokenName(token));
+	    printP2Exiting("Literal", lex->GetTokenName(token));
         printP2Exiting("Stmt", lex->GetTokenName(token));
     }
 
     else if (token == LPAREN_T) {
         Debug("LPAREN_T");
-	// apply rule 9
-	// <stmt> -> LPAREN_T <action> RPAREN_T
-	printP2File("Stmt", lex->GetTokenName(token), lex->GetLexeme());
+    	// apply rule 9
+	    // <stmt> -> LPAREN_T <action> RPAREN_T
+	    printP2File("Stmt", lex->GetTokenName(token), lex->GetLexeme());
         printP2FileUsing("9");
 	
-	GetTokLex();
+	    GetTokLex(); // move past lparen
 	
         if (token == IDENT_T) { // function
-          operand_1 = lexeme + "(";
-          GetTokLex();
-          if (token == LPAREN_T) {
-	    token = lex->GetToken();
-            operand_1 += arith_helper() + ") ";
-          }
-          else if (token == NUMLIT_T) {
-            operand_1 += lexeme	+ ") ";
-          }
-          else if (token == IDENT_T) { // parameter of current function
-            operand_1 += lexeme + ") ";
-          }
-        } else if (token == PLUS_T || token == MINUS_T || token == DIV_T || token == MULT_T) {
+            operand_1 = lexeme + "(";
+            GetTokLex();
+            while (token != RPAREN_T){
+                if (token == LPAREN_T) {
+                    token = lex->GetToken();
+                    operand_1 += arith_helper() + ") ";
+                    GetTokLex();
+                }
+                else if (token == NUMLIT_T || token == IDENT_T) {
+                    operand_1 += lexeme + ") ";
+                    token = lex->GetToken();
+                }
+            }
+            operand_1 += ") ";
+            cout << "Current Lexeme: " << lexeme << endl;
+        } 
+        else if (token == PLUS_T || token == MINUS_T || token == DIV_T || token == MULT_T) {
           operand_1 = string("(") + arith_helper() + ") ";
-	}
+          cout << "Current Lexeme: " << lexeme << endl;
+        }
 
-
-	printP2Exiting("Stmt", lex->GetTokenName(token));
+	    printP2Exiting("Stmt", lex->GetTokenName(token));
 	
-	GetTokLex(); // move to next operand
+	    GetTokLex(); // move to next operand
     }
 
     else if (token == IDENT_T){ // parameter
         Debug("IDENT_T");
-	// apply rule 8
-	// <stmt> -> IDENT_T
-	printP2File("Stmt", lex->GetTokenName(token), lex->GetLexeme());
+	    // apply rule 8
+	    // <stmt> -> IDENT_T
+	    printP2File("Stmt", lex->GetTokenName(token), lex->GetLexeme());
         printP2FileUsing("8");
-	printP2Exiting("Stmt", lex->GetTokenName(token));
+	    printP2Exiting("Stmt", lex->GetTokenName(token));
 	
         operand_1 = lexeme + " ";
         GetTokLex();
     } // else error?
-
+    cout << "Between operands, current Lexeme: " << lexeme << endl;
     if (token == NUMLIT_T) {
         Debug("NUMLIT_T");
 	
-	printP2File("Stmt", lex->GetTokenName(token), lex->GetLexeme());
+	    printP2File("Stmt", lex->GetTokenName(token), lex->GetLexeme());
         printP2FileUsing("7");
-	printP2File("Literal", lex->GetTokenName(token), lex->GetLexeme());
+	    printP2File("Literal", lex->GetTokenName(token), lex->GetLexeme());
         printP2FileUsing("10");
 
-        operand_2 = string(" Object") + " (" + lexeme +")";
+        operand_2 = string(" Object (") + lexeme +")";
         GetTokLex();
 
-	printP2Exiting("Literal", lex->GetTokenName(token));
+	    printP2Exiting("Literal", lex->GetTokenName(token));
         printP2Exiting("Stmt", lex->GetTokenName(token));
     }
 
     else if (token == LPAREN_T) {
         Debug("LPAREN_T");
-	// apply rule 9
+	    // apply rule 9
         // <stmt> -> LPAREN_T <action> RPAREN_T 
-	printP2File("Stmt", lex->GetTokenName(token), lex->GetLexeme());
+	    printP2File("Stmt", lex->GetTokenName(token), lex->GetLexeme());
         printP2FileUsing("9");
 	
         GetTokLex();
 
-	if (token == IDENT_T) { // function
-	  operand_2 = string(" ") + lexeme + "(";
-	  GetTokLex();
-	  if (token == LPAREN_T) {
-	    token = lex->GetToken();
-	    operand_2 += arith_helper() + ")";
-	  }
-	  else if (token == NUMLIT_T) {
-	    operand_2 += lexeme + ")";
-	  }
-	  else if (token == IDENT_T) { // parameter of current function
-	    operand_2 += lexeme + ")";
-	  }
-	} else if (token == PLUS_T || token == MINUS_T || token == DIV_T || token == MULT_T) {
-	  operand_2 = string(" (") + arith_helper() + ")";
-	}
+	    if (token == IDENT_T) { // function
+	        operand_2 = string(" ") + lexeme + "(";
+	        GetTokLex();
+            while (token != RPAREN_T){
+                if (token == LPAREN_T) {
+                    token = lex->GetToken();
+                    operand_2 += arith_helper() + ") ";
+                    GetTokLex();
+                }
+                else if (token == NUMLIT_T || token == IDENT_T) {
+                    operand_2 += lexeme;
+                    token = lex->GetToken();
+                }
+            }
+            operand_2 += ")";
+            cout << "Current Lexeme: " << lexeme << endl;
+         
+	    } 
+        else if (token == PLUS_T || token == MINUS_T || token == DIV_T || token == MULT_T) {
+	       operand_2 = string(" (") + arith_helper() + ")";
+	    }
 	
         GetTokLex(); // to see right paren
-
-	printP2Exiting("Stmt", lex->GetTokenName(token));
+        cout << "Current Lexeme: " << lexeme << endl;
+	    printP2Exiting("Stmt", lex->GetTokenName(token));
     }
 
     else if (token == IDENT_T) { // parameter
