@@ -84,7 +84,7 @@ class SyntacticalAnalyzer
 	token_type token;
     ofstream p2file;
     string lexeme;
-    int objCount;
+    bool no_return; // 10/10 name
 
     /* Token mapper */
     map <token_type, tokenMapper> row; 
@@ -113,12 +113,13 @@ class SyntacticalAnalyzer
     void printP2Exiting(const string &funkyName, const string &token);
     bool isValidToken(functionRuleNumberMapping fMap);
     void validateToken(functionRuleNumberMapping fMap);
-    string objectName();
-    
+        
     /* Helper functions - CodeGen */
     void GetTokLex();
     void PLUS();
-
+    void arithmetic();
+    string arith_helper();
+    
     /* Debugging */
 	void Debug(string functionName);
 	template<typename A> void PrintQ(A q);
