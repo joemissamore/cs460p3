@@ -221,7 +221,7 @@ int SyntacticalAnalyzer::stmt(){
         errors+= action();
         if(token == RPAREN_T){
 	  codeGen->WriteCode(0, ";\n");
-            token = lex->GetToken();
+	  token = lex->GetToken();
         }
         else{
             writeLstExpected(RPAREN_T);
@@ -633,8 +633,7 @@ int SyntacticalAnalyzer::action() {
 
         case NEWLINE_T:
             Debug("Action() - NEWLINE_T");
-	    cout << "WELL HELL CLETUS" << endl;
-	    codeGen->WriteCode(1, "cout << endl;\n");
+	    codeGen->WriteCode(1, "cout << endl"); // we're double printing semicolons and \n's
             printP2FileUsing("49");
             token = lex->GetToken();
             break;
