@@ -210,30 +210,37 @@ int SyntacticalAnalyzer::stmt(string pass){
     
     if(token==IDENT_T){
         printP2FileUsing("8");
+        codeGen->WriteCode(0, "Object (" + lex->GetLexeme() + ")");
         token = lex->GetToken();
     }
     else if (token == LPAREN_T){
         printP2FileUsing("9");
         token = lex->GetToken();
 	
-	if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && !(no_return)) {
+	if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && !(no_return)) 
+    {
 	  codeGen->WriteCode(1, "return "); 
-	} else {
+	} 
+    else 
+    {
 	  no_return = true;
 	}
+
 	codeGen->WriteCode(0, "(");
-        errors+= action("");
-        if(token == RPAREN_T){
-	  codeGen->WriteCode(0, ")");
-	  if (!(no_return)) {
-	    codeGen->WriteCode(0, ";\n");
-	  }
-	  token = lex->GetToken();
-        }
-        else{
-            writeLstExpected(RPAREN_T);
-            errors++;
-        }
+    errors+= action("");
+    if(token == RPAREN_T)
+    {
+	    codeGen->WriteCode(0, ")");
+        if (!(no_return)) 
+            codeGen->WriteCode(0, ";\n");
+
+        token = lex->GetToken();
+    }
+    else
+    {
+        writeLstExpected(RPAREN_T);
+        errors++;
+    }
     }
     else if (token == NUMLIT_T || token ==  STRLIT_T || token ==  SQUOTE_T) {
         printP2FileUsing("7");
@@ -374,6 +381,7 @@ int SyntacticalAnalyzer::define(string pass){
     int errors = 0;
     printP2File("Define", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(DEFINE_F);
+    Debug("Define()");
 
     cout << "define() :: Pass: " << pass << endl;
     
@@ -957,16 +965,19 @@ int SyntacticalAnalyzer::literal(string pass)
     int errors = 0;
     printP2File("Literal", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(LITERAL_F);
+    Debug("literal()");
 
     if (token == NUMLIT_T)
     {
         printP2FileUsing("10");
 	string hold = lex->GetLexeme();
 	token = lex->GetToken();
-	if (pass != "") {
+	if (pass != "") 
+    {
 	  if (token != RPAREN_T) {
 	    codeGen->WriteCode(0, "Object (" + hold + ") " + pass + " ");
-	  } else {
+	  } 
+      else {
 	    codeGen->WriteCode(0," " + pass + " " + "Object (" + hold + ")");
 	  }
 	} else {
