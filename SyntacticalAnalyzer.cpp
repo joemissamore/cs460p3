@@ -218,15 +218,15 @@ int SyntacticalAnalyzer::stmt(string pass){
 	
 	if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && !(no_return)) {
 	  codeGen->WriteCode(1, "return "); 
+	} else if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && no_return) {
+	  codeGen->WriteCode(0, "(");
 	} else {
 	  no_return = true;
 	}
-	codeGen->WriteCode(0, "(");
         errors+= action("");
         if(token == RPAREN_T){
-	  codeGen->WriteCode(0, ")");
 	  if (!(no_return)) {
-	    codeGen->WriteCode(0, ";\n");
+	    codeGen->WriteCode(0, ";)\n");
 	  }
 	  token = lex->GetToken();
         }
@@ -470,7 +470,7 @@ int SyntacticalAnalyzer::action(string pass) {
 
         case IF_T:
             printP2FileUsing("24");
-	    codeGen->WriteCode(0, "if ");
+	    codeGen->WriteCode(1, "if ");
             token = lex->GetToken();
             errors += stmt("");
 	    codeGen->WriteCode(0, "){\n");
@@ -915,7 +915,9 @@ int SyntacticalAnalyzer::else_part(string pass)
     if (token == LPAREN_T || token == IDENT_T || token == NUMLIT_T || token == STRLIT_T || token == SQUOTE_T)
     {
         printP2FileUsing("18");
+	codeGen->WriteCode(1, "} else {\n");
         errors += stmt("");
+	codeGen->WriteCode(0, "}\n");
     }
 
     else if (token == RPAREN_T)
