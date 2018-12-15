@@ -219,12 +219,8 @@ int SyntacticalAnalyzer::stmt(string pass){
         token = lex->GetToken();
 	bool on_return = false;
 	if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && !(no_return)) 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 3849983838c4de25070ff61b72528e685e52227a
 	  {
-	  codeGen->WriteCode(1, "(return ");
+	  codeGen->WriteCode(1, "return ");
 	  no_return = true;
 	  on_return = true;
 	} else if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && no_return) {
@@ -232,24 +228,10 @@ int SyntacticalAnalyzer::stmt(string pass){
 	} else {
 	  no_return = true;
 	}
-<<<<<<< HEAD
-=======
-	    codeGen->WriteCode(1, "return "); 
-
-    else if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && no_return) 
-	    codeGen->WriteCode(0, "(");
-
-    else 
-        no_return = true;
-
-
->>>>>>> 5e40432e0e1634f3b35efc92448e3f828e69223d
-=======
->>>>>>> 3849983838c4de25070ff61b72528e685e52227a
         errors+= action("");
         if(token == RPAREN_T){
 	  if (!(no_return) || on_return) {
-	    codeGen->WriteCode(0, ";)\n");
+	    codeGen->WriteCode(0, ";\n");
 	  }
 	  token = lex->GetToken();
         }
@@ -261,11 +243,11 @@ int SyntacticalAnalyzer::stmt(string pass){
     else if (token == NUMLIT_T || token ==  STRLIT_T || token ==  SQUOTE_T) {
         printP2FileUsing("7");
 	if (!(no_return)) {
-	  codeGen->WriteCode(1, "(return ");
+	  codeGen->WriteCode(1, "return ");
 	}
         errors+=literal(pass);
 	if (!(no_return)) {
-	  codeGen->WriteCode(0, ";)\n");
+	  codeGen->WriteCode(0, ";\n");
 	}
     }
     else {
@@ -988,9 +970,9 @@ int SyntacticalAnalyzer::quoted_lit(string pass)
     else
     {
         printP2FileUsing("13");
-	codeGen->WriteCode(0, "\"");
+	codeGen->WriteCode(0, "Object (\"");
         errors += any_other_token("");
-	codeGen->WriteCode(0, "\"");
+	codeGen->WriteCode(0, "\")");
     }
 
     printP2Exiting("Quoted_Lit", lex->GetTokenName(token));
