@@ -668,14 +668,21 @@ int SyntacticalAnalyzer::action(string pass) {
 }
 
 // Function "any_other_token" attempts to apply rules 50-81.
-int SyntacticalAnalyzer::any_other_token(string pass) {
+int SyntacticalAnalyzer::any_other_token(string pass, bool prevCalled) {
     int errors = 0;
     printP2File("Any_Other_Token", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(ANY_OTHER_TOKEN_F);
 
+
+    debug << "prevCalled: " << prevCalled << endl;
+    if (prevCalled)
+        codeGen->WriteCode(0, " ");
+
     switch (token) {
 
         case LPAREN_T:
+            // If it an LPARENT_T then its a quoted list
+            codeGen->WriteCode(0, "(");
             printP2FileUsing("50");
             token = lex->GetToken();
             errors += more_tokens("");
@@ -695,6 +702,7 @@ int SyntacticalAnalyzer::any_other_token(string pass) {
             break;
 
         case NUMLIT_T:
+            codeGen->WriteCode(0, lex->GetLexeme());
             printP2FileUsing("52");
             token = lex->GetToken();
             break;
@@ -955,10 +963,13 @@ int SyntacticalAnalyzer::quoted_lit(string pass)
 
     else
     {
+        if (token == LPAREN_T)
+            codeGen->WriteCode(0, "Object (");
+
         printP2FileUsing("13");
-	codeGen->WriteCode(0, "\"");
+	    codeGen->WriteCode(0, "\"");
         errors += any_other_token("");
-	codeGen->WriteCode(0, "\"");
+	codeGen->WriteCode(0, "\")");
     }
 
     printP2Exiting("Quoted_Lit", lex->GetTokenName(token));
@@ -1021,6 +1032,8 @@ int SyntacticalAnalyzer::more_tokens(string pass)
     printP2File("More_Tokens", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(MORE_TOKENS_F);
 
+    // bool notFirstCall = false;
+
     // This is the only rule that can throw an err
     if (token == EOF_T) 
     {
@@ -1029,14 +1042,18 @@ int SyntacticalAnalyzer::more_tokens(string pass)
     }
 
     else if (token == RPAREN_T)
+    {
+        codeGen->WriteCode(0, ")");
         printP2FileUsing("15");
+    }
+        
 
     /* If the token is not RPARENT_T or EOF_T 
      * apply rule 14 */
     else 
     {
         printP2FileUsing("14");
-        errors += any_other_token("");
+        errors += any_other_token("", true);
         errors += more_tokens("");
     }
 

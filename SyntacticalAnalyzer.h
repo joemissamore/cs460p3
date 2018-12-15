@@ -103,7 +103,7 @@ class SyntacticalAnalyzer
     int stmt_pair(string pass);
     int stmt_pair_body(string pass);
     int action(string pass);
-    int any_other_token(string pass);
+    int any_other_token(string pass, bool prevCalled=false);
 
     /* Helper functions */
     void writeLstExpected(const token_type token);
