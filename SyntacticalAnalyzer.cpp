@@ -81,7 +81,7 @@ SyntacticalAnalyzer::SyntacticalAnalyzer (char * filename)
     token = lex->GetToken();
     totalErrs = 0;
     no_return = false;
-    totalErrs = program ();
+    totalErrs = program ("");
     cout << "Total syntax errors: " << totalErrs << endl;
 
 }
@@ -152,7 +152,7 @@ void SyntacticalAnalyzer::printP2Exiting(const string &funkyName, const string &
  * calling writeLstUnexpected(). Upon exiting a given transition
  * function the functions final write to the p2 file is done 
  * signaling the function exit */
-int SyntacticalAnalyzer::program(){
+int SyntacticalAnalyzer::program(string pass){
     int errors = 0;
     printP2File("Program", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(PROGRAM_F);
@@ -168,7 +168,7 @@ int SyntacticalAnalyzer::program(){
     }
     if (token == DEFINE_T)
     {
-        errors += define();
+        errors += define("");
     }
     else
     {
@@ -185,7 +185,7 @@ int SyntacticalAnalyzer::program(){
         writeLstExpected(LPAREN_T);
     }
 
-    errors += more_defines();
+    errors += more_defines("");
 
     if (token != EOF_T)
     {
@@ -194,13 +194,13 @@ int SyntacticalAnalyzer::program(){
     }
 
     codeGen->WriteCode(1, "return 0;\n");
-	codeGen->WriteCode(0, "}");
+    codeGen->WriteCode(0, "}");
     Debug("Program() - exiting function");
     printP2Exiting("Program", lex->GetTokenName(token));
     return errors;
 }
 
-int SyntacticalAnalyzer::stmt(){
+int SyntacticalAnalyzer::stmt(string pass){
     int errors = 0;
     printP2File("Stmt", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(STMT_F);
@@ -218,7 +218,7 @@ int SyntacticalAnalyzer::stmt(){
 	} else {
 	  no_return = true;
 	}
-        errors+= action();
+        errors+= action("");
         if(token == RPAREN_T){
 	  codeGen->WriteCode(0, ";\n");
 	  token = lex->GetToken();
@@ -230,7 +230,7 @@ int SyntacticalAnalyzer::stmt(){
     }
     else if (token == NUMLIT_T || token ==  STRLIT_T || token ==  SQUOTE_T) {
         printP2FileUsing("7");
-        errors+=literal();
+        errors+=literal(pass);
     }
     else {
         errors++;
@@ -241,7 +241,7 @@ int SyntacticalAnalyzer::stmt(){
     return errors;
 }
 
-int SyntacticalAnalyzer::stmt_pair_body(){
+int SyntacticalAnalyzer::stmt_pair_body(string pass){
     int errors = 0;
     printP2File("Stmt_Pair_Body", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(STMT_PAIR_BODY_F);
@@ -251,7 +251,7 @@ int SyntacticalAnalyzer::stmt_pair_body(){
         printP2FileUsing("23");
         token = lex->GetToken();  
 	no_return = false;
-	errors+=stmt();
+	errors+=stmt("");
         if(token==RPAREN_T)
             token = lex->GetToken();
         else 
@@ -264,9 +264,9 @@ int SyntacticalAnalyzer::stmt_pair_body(){
     else 
     {
         printP2FileUsing("22");
-        errors+=stmt();
+        errors+=stmt("");
 	no_return = false; // set to true in stmt, rule 9, the next line is then-body
-        errors+=stmt();
+        errors+=stmt("");
         if(token==RPAREN_T)
             token = lex->GetToken();
         else 
@@ -275,14 +275,14 @@ int SyntacticalAnalyzer::stmt_pair_body(){
             writeLstExpected(RPAREN_T);
         }
 	no_return = true;
-        errors+=stmt_pair();
+        errors+=stmt_pair("");
     }
     
     printP2Exiting("Stmt_Pair_Body", lex->GetTokenName(token));
     return errors;
 }
 
-int SyntacticalAnalyzer::stmt_list()
+int SyntacticalAnalyzer::stmt_list(string pass)
 {
     int errors = 0;
     printP2File("Stmt_List", lex->GetTokenName(token), lex->GetLexeme());
@@ -291,8 +291,8 @@ int SyntacticalAnalyzer::stmt_list()
     if (token == LPAREN_T || token == IDENT_T || token == NUMLIT_T || token == STRLIT_T || token == SQUOTE_T)
     {
         printP2FileUsing("5");
-        errors += stmt();
-        errors+= stmt_list();
+        errors += stmt("");
+        errors+= stmt_list("");
     }
 
     else if (token == RPAREN_T)
@@ -308,7 +308,7 @@ int SyntacticalAnalyzer::stmt_list()
     return errors;
 }
 
-int SyntacticalAnalyzer::more_defines(){
+int SyntacticalAnalyzer::more_defines(string pass){
     int errors = 0;
     printP2File("More_Defines", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(MORE_DEFINES_F);
@@ -317,7 +317,7 @@ int SyntacticalAnalyzer::more_defines(){
     {
         printP2FileUsing("3");
         token = lex->GetToken();
-        errors += stmt_list();
+        errors += stmt_list("");
         if (token == RPAREN_T)
         {
             token = lex->GetToken();
@@ -332,7 +332,7 @@ int SyntacticalAnalyzer::more_defines(){
     else if (token == DEFINE_T)
     {
         printP2FileUsing("2");
-        errors += define();
+        errors += define("");
 
         if (token == LPAREN_T)
             token = lex->GetToken();
@@ -343,7 +343,7 @@ int SyntacticalAnalyzer::more_defines(){
             writeLstExpected(LPAREN_T);   
         }
         
-        errors += more_defines();
+        errors += more_defines("");
     }
 
     else
@@ -357,7 +357,7 @@ int SyntacticalAnalyzer::more_defines(){
 
 }
 
-int SyntacticalAnalyzer::define(){
+int SyntacticalAnalyzer::define(string pass){
     int errors = 0;
     printP2File("Define", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(DEFINE_F);
@@ -400,7 +400,7 @@ int SyntacticalAnalyzer::define(){
             writeLstExpected(IDENT_T);
         }
 
-        errors += param_list();
+        errors += param_list("");
 
         if(token==RPAREN_T)
         {
@@ -414,9 +414,9 @@ int SyntacticalAnalyzer::define(){
             writeLstExpected(RPAREN_T);
         }
 
-        errors += stmt();
+        errors += stmt("");
         Debug("Define() - exited Stmt()");
-        errors += stmt_list();
+        errors += stmt_list("");
         Debug("Define() - exited Stmt_List()");
 
         if (token == RPAREN_T)
@@ -443,7 +443,7 @@ int SyntacticalAnalyzer::define(){
 }
 
 // Function "action" attempts to apply rules 24-49.
-int SyntacticalAnalyzer::action() {
+int SyntacticalAnalyzer::action(string pass) {
     int errors = 0;
     printP2File("Action", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(ACTION_F);
@@ -454,10 +454,10 @@ int SyntacticalAnalyzer::action() {
         case IF_T:
             printP2FileUsing("24");
             token = lex->GetToken();
-            errors += stmt();
+            errors += stmt("");
 	    no_return = false; // set to true in stmt, rule 9
-            errors += stmt();
-            errors += else_part();
+            errors += stmt("");
+            errors += else_part("");
             break;
 
         case COND_T:
@@ -473,162 +473,150 @@ int SyntacticalAnalyzer::action() {
                 writeLstExpected(LPAREN_T);
             }
 
-            errors += stmt_pair_body();
+            errors += stmt_pair_body("");
             break;
 
         case LISTOP_T:
             printP2FileUsing("26");
             token = lex->GetToken();
-            errors += stmt();
+            errors += stmt("");
             break;
 
         case CONS_T:
             printP2FileUsing("27");
             token = lex->GetToken();
-            errors += stmt();
-            errors += stmt();
+            errors += stmt("");
+            errors += stmt("");
             break;
 
         case AND_T:
             printP2FileUsing("28");
             token = lex->GetToken();
-            errors += stmt_list();
+            errors += stmt_list("");
             break;
 
         case OR_T:
             printP2FileUsing("29");
             token = lex->GetToken();
-            errors += stmt_list();
+            errors += stmt_list("");
             break;
 
         case NOT_T:
             printP2FileUsing("30");
             token = lex->GetToken();
-            errors += stmt();
+            errors += stmt("");
             break;
 
         case NUMBERP_T:
             printP2FileUsing("31");
             token = lex->GetToken();
-            errors += stmt();
+            errors += stmt("");
             break;
 
         case LISTP_T:
             printP2FileUsing("32");
             token = lex->GetToken();
-            errors += stmt();
+            errors += stmt("");
             break;
 
         case ZEROP_T:
             printP2FileUsing("33");
             token = lex->GetToken();
-            errors += stmt();
+            errors += stmt("");
             break;
 
         case NULLP_T:
             printP2FileUsing("34");
             token = lex->GetToken();
-            errors += stmt();
+            errors += stmt("");
             break;
 
         case STRINGP_T:
             printP2FileUsing("35");
             token = lex->GetToken();
-            errors += stmt();
+            errors += stmt("");
             break;
 
         case PLUS_T:
-	       arithmetic(); // i think we'll need to get rid of everything below ?
-	       /*
-	       printP2FileUsing("36");
-            token = lex->GetToken();
-            errors += stmt_list();
-	       */            
-	       break;
+	    printP2FileUsing("36");
+	    token = lex->GetToken();
+	    errors += stmt_list("+");
+	    break;
 
         case MINUS_T:
-	       arithmetic();
-	       /*
             printP2FileUsing("37");
             token = lex->GetToken();
-            errors += stmt();
-            errors += stmt_list();
-	       */
-	       break;
+            errors += stmt("-");
+            errors += stmt_list("");
+	    break;
 
         case DIV_T:
-	       arithmetic();
-	       /*
-            printP2FileUsing("38");
+	    printP2FileUsing("38");
             token = lex->GetToken();
-            errors += stmt();
-            errors += stmt_list();
-	       */
-	       break;
+            errors += stmt("/");
+            errors += stmt_list("");
+	    break;
 
         case MULT_T:
-	       arithmetic();
-	       /*
-	       printP2FileUsing("39");
+	    printP2FileUsing("39");
             token = lex->GetToken();
-            errors += stmt_list();
-	       */
-	       break;
+            errors += stmt_list("*");
+	    break;
 
         case MODULO_T:
             printP2FileUsing("40");
             token = lex->GetToken();
-            errors += stmt();
-            errors += stmt();
+            errors += stmt("");
+            errors += stmt("");
             break;
 
         case ROUND_T:
             printP2FileUsing("41");
             token = lex->GetToken();
-            errors += stmt();
+            errors += stmt("");
             break;
 
         case EQUALTO_T:
             printP2FileUsing("42");
             token = lex->GetToken();
-            errors += stmt_list();
+            errors += stmt_list("");
             break;
 
         case GT_T:
             printP2FileUsing("43");
             token = lex->GetToken();
-            errors += stmt_list();
+            errors += stmt_list("");
             break;
 
         case LT_T:
             printP2FileUsing("44");
             token = lex->GetToken();
-            errors += stmt_list();
+            errors += stmt_list("");
             break;
             
         case GTE_T:
             printP2FileUsing("45");
             token = lex->GetToken();
-            errors += stmt_list();
+            errors += stmt_list("");
             break;
 
         case LTE_T:
             printP2FileUsing("46");
             token = lex->GetToken();
-            errors += stmt_list();
+            errors += stmt_list("");
             break;
 
         case IDENT_T:
             printP2FileUsing("47");
             token = lex->GetToken();
-            errors += stmt_list();
+            errors += stmt_list("");
             break;
 
         case DISPLAY_T:
             printP2FileUsing("48");
             codeGen->WriteCode(1, "cout << ");
             token = lex->GetToken();
-            errors += stmt();
+            errors += stmt("");
             break;
 
         case NEWLINE_T:
@@ -649,7 +637,7 @@ int SyntacticalAnalyzer::action() {
 }
 
 // Function "any_other_token" attempts to apply rules 50-81.
-int SyntacticalAnalyzer::any_other_token() {
+int SyntacticalAnalyzer::any_other_token(string pass) {
     int errors = 0;
     printP2File("Any_Other_Token", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(ANY_OTHER_TOKEN_F);
@@ -659,7 +647,7 @@ int SyntacticalAnalyzer::any_other_token() {
         case LPAREN_T:
             printP2FileUsing("50");
             token = lex->GetToken();
-            errors += more_tokens();
+            errors += more_tokens("");
             if (token == RPAREN_T) {
                 token = lex->GetToken();
             }
@@ -812,7 +800,7 @@ int SyntacticalAnalyzer::any_other_token() {
         case SQUOTE_T:
             printP2FileUsing("79");
             token = lex->GetToken();
-            errors += any_other_token();
+            errors += any_other_token("");
             break;
 
         case COND_T:
@@ -836,7 +824,7 @@ int SyntacticalAnalyzer::any_other_token() {
 }
 
 // Function "stmt_pair" attempts to apply rules 20-21.
-int SyntacticalAnalyzer::stmt_pair() {
+int SyntacticalAnalyzer::stmt_pair(string pass) {
     int errors = 0;
     printP2File("Stmt_Pair", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(STMT_PAIR_F);
@@ -844,7 +832,7 @@ int SyntacticalAnalyzer::stmt_pair() {
     if (token == LPAREN_T) {
         printP2FileUsing("20");
         token = lex->GetToken();
-        errors += stmt_pair_body();
+        errors += stmt_pair_body("");
     }
 
     else if (token == RPAREN_T){
@@ -865,7 +853,7 @@ int SyntacticalAnalyzer::stmt_pair() {
 // Function "param_list" attempts to apply rules 16-17.
 /* Might need a flag to be able to check if its the first
  * time through this function */
-int SyntacticalAnalyzer::param_list() {
+int SyntacticalAnalyzer::param_list(string pass) {
     int errors = 0;
     printP2File("Param_List", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(PARAM_LIST_F);
@@ -876,7 +864,7 @@ int SyntacticalAnalyzer::param_list() {
         codeGen->WriteCode(0,"Object " + lex->GetLexeme() + " ");
         printP2FileUsing("16");
         token = lex->GetToken(); 
-        errors += param_list();
+        errors += param_list("");
     }
 
     else if (token == RPAREN_T)
@@ -892,7 +880,7 @@ int SyntacticalAnalyzer::param_list() {
     return errors;
 }
 
-int SyntacticalAnalyzer::else_part()
+int SyntacticalAnalyzer::else_part(string pass)
 {
     int errors = 0;
     printP2File("Else_Part", lex->GetTokenName(token), lex->GetLexeme());
@@ -901,7 +889,7 @@ int SyntacticalAnalyzer::else_part()
     if (token == LPAREN_T || token == IDENT_T || token == NUMLIT_T || token == STRLIT_T || token == SQUOTE_T)
     {
         printP2FileUsing("18");
-        errors += stmt();
+        errors += stmt("");
     }
 
     else if (token == RPAREN_T)
@@ -919,7 +907,7 @@ int SyntacticalAnalyzer::else_part()
     return errors;
 }
 
-int SyntacticalAnalyzer::quoted_lit()
+int SyntacticalAnalyzer::quoted_lit(string pass)
 {
     int errors = 0;
     printP2File("Quoted_Lit", lex->GetTokenName(token), lex->GetLexeme());
@@ -934,14 +922,14 @@ int SyntacticalAnalyzer::quoted_lit()
     else
     {
         printP2FileUsing("13");
-        errors += any_other_token();
+        errors += any_other_token("");
     }
 
     printP2Exiting("Quoted_Lit", lex->GetTokenName(token));
     return errors;
 }
 
-int SyntacticalAnalyzer::literal()
+int SyntacticalAnalyzer::literal(string pass)
 {
     int errors = 0;
     printP2File("Literal", lex->GetTokenName(token), lex->GetLexeme());
@@ -950,6 +938,7 @@ int SyntacticalAnalyzer::literal()
     if (token == NUMLIT_T)
     {
         printP2FileUsing("10");
+	codeGen->WriteCode(0, "Object (" + lex->GetLexeme() + ") " + pass);
         token = lex->GetToken();
     }
 
@@ -963,7 +952,7 @@ int SyntacticalAnalyzer::literal()
     {
         printP2FileUsing("12");
         token = lex->GetToken();
-        errors += quoted_lit();
+        errors += quoted_lit("");
     }
 
     else 
@@ -977,7 +966,7 @@ int SyntacticalAnalyzer::literal()
 }
 
 
-int SyntacticalAnalyzer::more_tokens()
+int SyntacticalAnalyzer::more_tokens(string pass)
 {
     int errors = 0;
     printP2File("More_Tokens", lex->GetTokenName(token), lex->GetLexeme());
@@ -998,8 +987,8 @@ int SyntacticalAnalyzer::more_tokens()
     else 
     {
         printP2FileUsing("14");
-        errors += any_other_token();
-        errors += more_tokens();
+        errors += any_other_token("");
+        errors += more_tokens("");
     }
 
     printP2Exiting("More_Tokens", lex->GetTokenName(token));

@@ -90,20 +90,20 @@ class SyntacticalAnalyzer
     map <token_type, tokenMapper> row; 
 
     /* Transition functions */
-    int program();
-    int more_defines();
-    int define();
-    int stmt_list();
-    int stmt();
-    int literal();
-    int quoted_lit();
-    int more_tokens();
-    int param_list();
-    int else_part();
-    int stmt_pair();
-    int stmt_pair_body();
-    int action();
-    int any_other_token();
+    int program(string pass);
+    int more_defines(string pass);
+    int define(string pass);
+    int stmt_list(string pass);
+    int stmt(string pass);
+    int literal(string pass);
+    int quoted_lit(string pass);
+    int more_tokens(string pass);
+    int param_list(string pass);
+    int else_part(string pass);
+    int stmt_pair(string pass);
+    int stmt_pair_body(string pass);
+    int action(string pass);
+    int any_other_token(string pass);
 
     /* Helper functions */
     void writeLstExpected(const token_type token);
