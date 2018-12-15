@@ -152,7 +152,8 @@ void SyntacticalAnalyzer::printP2Exiting(const string &funkyName, const string &
  * calling writeLstUnexpected(). Upon exiting a given transition
  * function the functions final write to the p2 file is done 
  * signaling the function exit */
-int SyntacticalAnalyzer::program(string pass){
+int SyntacticalAnalyzer::program(string pass)
+{
     int errors = 0;
     printP2File("Program", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(PROGRAM_F);
@@ -218,6 +219,7 @@ int SyntacticalAnalyzer::stmt(string pass){
         token = lex->GetToken();
 	bool on_return = false;
 	if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && !(no_return)) 
+<<<<<<< HEAD
 	  {
 	  codeGen->WriteCode(1, "(return ");
 	  no_return = true;
@@ -227,6 +229,17 @@ int SyntacticalAnalyzer::stmt(string pass){
 	} else {
 	  no_return = true;
 	}
+=======
+	    codeGen->WriteCode(1, "return "); 
+
+    else if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && no_return) 
+	    codeGen->WriteCode(0, "(");
+
+    else 
+        no_return = true;
+
+
+>>>>>>> 5e40432e0e1634f3b35efc92448e3f828e69223d
         errors+= action("");
         if(token == RPAREN_T){
 	  if (!(no_return) || on_return) {
@@ -1005,6 +1018,7 @@ int SyntacticalAnalyzer::literal(string pass)
 
     else if (token == STRLIT_T)
     {
+        codeGen->WriteCode(0, "Object (" + lex->GetLexeme() + ")");
         printP2FileUsing("11");
         token = lex->GetToken();
     }
