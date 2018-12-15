@@ -152,7 +152,8 @@ void SyntacticalAnalyzer::printP2Exiting(const string &funkyName, const string &
  * calling writeLstUnexpected(). Upon exiting a given transition
  * function the functions final write to the p2 file is done 
  * signaling the function exit */
-int SyntacticalAnalyzer::program(string pass){
+int SyntacticalAnalyzer::program(string pass)
+{
     int errors = 0;
     printP2File("Program", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(PROGRAM_F);
@@ -1005,6 +1006,7 @@ int SyntacticalAnalyzer::literal(string pass)
 
     else if (token == STRLIT_T)
     {
+        codeGen->WriteCode(0, "Object (" + lex->GetLexeme() + ")");
         printP2FileUsing("11");
         token = lex->GetToken();
     }
