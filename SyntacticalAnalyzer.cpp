@@ -220,7 +220,9 @@ int SyntacticalAnalyzer::stmt(string pass){
 	}
         errors+= action("");
         if(token == RPAREN_T){
-	  codeGen->WriteCode(0, ";\n");
+	  if (!(no_return)) {
+	    codeGen->WriteCode(0, ";\n");
+	  }
 	  token = lex->GetToken();
         }
         else{
@@ -291,8 +293,8 @@ int SyntacticalAnalyzer::stmt_list(string pass)
     if (token == LPAREN_T || token == IDENT_T || token == NUMLIT_T || token == STRLIT_T || token == SQUOTE_T)
     {
         printP2FileUsing("5");
-        errors += stmt("");
-        errors+= stmt_list("");
+        errors += stmt(pass);
+        errors+= stmt_list(pass);
     }
 
     else if (token == RPAREN_T)
@@ -608,8 +610,10 @@ int SyntacticalAnalyzer::action(string pass) {
 
         case IDENT_T:
             printP2FileUsing("47");
+	    codeGen->WriteCode(0, lex->GetLexeme() + "(");
             token = lex->GetToken();
             errors += stmt_list("");
+	    codeGen->WriteCode(0, ") ");
             break;
 
         case DISPLAY_T:
@@ -617,11 +621,12 @@ int SyntacticalAnalyzer::action(string pass) {
             codeGen->WriteCode(1, "cout << ");
             token = lex->GetToken();
             errors += stmt("");
+	    codeGen->WriteCode(0, ";\n");
             break;
 
         case NEWLINE_T:
             Debug("Action() - NEWLINE_T");
-	    codeGen->WriteCode(1, "cout << endl"); // we're double printing semicolons and \n's
+	    codeGen->WriteCode(1, "cout << endl;\n"); // we're double printing semicolons and \n's
             printP2FileUsing("49");
             token = lex->GetToken();
             break;
@@ -938,7 +943,7 @@ int SyntacticalAnalyzer::literal(string pass)
     if (token == NUMLIT_T)
     {
         printP2FileUsing("10");
-	codeGen->WriteCode(0, "Object (" + lex->GetLexeme() + ") " + pass);
+	codeGen->WriteCode(0, "Object (" + lex->GetLexeme() + ") " + pass + " ");
         token = lex->GetToken();
     }
 
