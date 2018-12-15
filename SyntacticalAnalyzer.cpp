@@ -227,7 +227,7 @@ int SyntacticalAnalyzer::stmt(string pass){
     else if (token == LPAREN_T){
         printP2FileUsing("9");
         token = lex->GetToken();
-	bool on_return = false;
+	
 	if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && !(no_return)) 
 	  {
 	  codeGen->WriteCode(1, "return ");
@@ -252,6 +252,7 @@ int SyntacticalAnalyzer::stmt(string pass){
     }
     else if (token == NUMLIT_T || token ==  STRLIT_T || token ==  SQUOTE_T) {
         printP2FileUsing("7");
+
 	if (!(no_return)) {
 	  codeGen->WriteCode(1, "return ");
 	}
@@ -281,12 +282,9 @@ int SyntacticalAnalyzer::stmt_pair_body(string pass){
         printP2FileUsing("23");
         token = lex->GetToken();  
 	no_return = false;
-	codeGen->WriteCode(1, "} else {\n");
 	errors+=stmt("");
-        if(token==RPAREN_T) {
+        if(token==RPAREN_T)
             token = lex->GetToken();
-	    codeGen->WriteCode(1, "}\n");
-	}
         else 
         {
             writeLstExpected(RPAREN_T);
@@ -298,7 +296,6 @@ int SyntacticalAnalyzer::stmt_pair_body(string pass){
     {
         printP2FileUsing("22");
         errors+=stmt("");
-	codeGen->WriteCode(0, ") {\n");
 	no_return = false; // set to true in stmt, rule 9, the next line is then-body
         errors+=stmt("");
         if(token==RPAREN_T)
@@ -463,7 +460,7 @@ int SyntacticalAnalyzer::define(string pass){
         if (token == RPAREN_T)
 	{
 	  if (not_main)
-	    codeGen->WriteCode(0, "\n}\n");
+	    codeGen->WriteCode(0, "}\n");
 	  token = lex->GetToken();
 	}
 	else
@@ -509,10 +506,9 @@ int SyntacticalAnalyzer::action(string pass) {
             printP2FileUsing("25");
             token = lex->GetToken();
             
-            if (token == LPAREN_T) { 
+            if (token == LPAREN_T) 
                 token = lex->GetToken();
-		codeGen->WriteCode(1, "if ");
-	    }
+
             else 
             {
                 errors++;
@@ -706,14 +702,21 @@ int SyntacticalAnalyzer::action(string pass) {
 }
 
 // Function "any_other_token" attempts to apply rules 50-81.
-int SyntacticalAnalyzer::any_other_token(string pass) {
+int SyntacticalAnalyzer::any_other_token(string pass, bool prevCalled) {
     int errors = 0;
     printP2File("Any_Other_Token", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(ANY_OTHER_TOKEN_F);
 
+
+    debug << "prevCalled: " << prevCalled << endl;
+    if (prevCalled)
+        codeGen->WriteCode(0, " ");
+
     switch (token) {
 
         case LPAREN_T:
+            // If it an LPARENT_T then its a quoted list
+            codeGen->WriteCode(0, "(");
             printP2FileUsing("50");
             token = lex->GetToken();
             errors += more_tokens("");
@@ -733,6 +736,7 @@ int SyntacticalAnalyzer::any_other_token(string pass) {
             break;
 
         case NUMLIT_T:
+            codeGen->WriteCode(0, lex->GetLexeme());
             printP2FileUsing("52");
             token = lex->GetToken();
             break;
@@ -902,9 +906,6 @@ int SyntacticalAnalyzer::stmt_pair(string pass) {
     if (token == LPAREN_T) {
         printP2FileUsing("20");
         token = lex->GetToken();
-	if (token != ELSE_T) {
-	  codeGen->WriteCode(1, "} else if ");
-	}
         errors += stmt_pair_body("");
     }
 
@@ -964,7 +965,7 @@ int SyntacticalAnalyzer::else_part(string pass)
         printP2FileUsing("18");
 	codeGen->WriteCode(1, "} else {\n");
         errors += stmt("");
-	codeGen->WriteCode(1, "}\n");
+	codeGen->WriteCode(0, "}\n");
     }
 
     else if (token == RPAREN_T)
@@ -996,6 +997,9 @@ int SyntacticalAnalyzer::quoted_lit(string pass)
 
     else
     {
+        if (token == LPAREN_T)
+            codeGen->WriteCode(0, "Object (");
+
         printP2FileUsing("13");
 	codeGen->WriteCode(0, "Object (\"");
         errors += any_other_token("");
@@ -1056,11 +1060,13 @@ int SyntacticalAnalyzer::literal(string pass)
 }
 
 
-int SyntacticalAnalyzer::more_tokens(string pass)
+int SyntacticalAnalyzer::more_tokens(string pass, bool prevCalled)
 {
     int errors = 0;
     printP2File("More_Tokens", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(MORE_TOKENS_F);
+
+    // bool notFirstCall = false;
 
     // This is the only rule that can throw an err
     if (token == EOF_T) 
@@ -1070,15 +1076,19 @@ int SyntacticalAnalyzer::more_tokens(string pass)
     }
 
     else if (token == RPAREN_T)
+    {
+        codeGen->WriteCode(0, ")");
         printP2FileUsing("15");
+    }
+        
 
     /* If the token is not RPARENT_T or EOF_T 
      * apply rule 14 */
     else 
     {
         printP2FileUsing("14");
-        errors += any_other_token("");
-        errors += more_tokens("");
+        errors += any_other_token("", prevCalled);
+        errors += more_tokens("", true);
     }
 
     printP2Exiting("More_Tokens", lex->GetTokenName(token));

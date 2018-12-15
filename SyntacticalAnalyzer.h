@@ -97,13 +97,13 @@ class SyntacticalAnalyzer
     int stmt(string pass);
     int literal(string pass);
     int quoted_lit(string pass);
-    int more_tokens(string pass);
+    int more_tokens(string pass, bool prevCalled=false);
     int param_list(string pass);
     int else_part(string pass);
     int stmt_pair(string pass);
     int stmt_pair_body(string pass);
     int action(string pass);
-    int any_other_token(string pass);
+    int any_other_token(string pass, bool prevCalled=false);
 
     /* Helper functions */
     void writeLstExpected(const token_type token);
