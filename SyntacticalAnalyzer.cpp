@@ -220,6 +220,9 @@ int SyntacticalAnalyzer::stmt(string pass){
 	bool on_return = false;
 	if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && !(no_return)) 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 3849983838c4de25070ff61b72528e685e52227a
 	  {
 	  codeGen->WriteCode(1, "(return ");
 	  no_return = true;
@@ -229,6 +232,7 @@ int SyntacticalAnalyzer::stmt(string pass){
 	} else {
 	  no_return = true;
 	}
+<<<<<<< HEAD
 =======
 	    codeGen->WriteCode(1, "return "); 
 
@@ -240,6 +244,8 @@ int SyntacticalAnalyzer::stmt(string pass){
 
 
 >>>>>>> 5e40432e0e1634f3b35efc92448e3f828e69223d
+=======
+>>>>>>> 3849983838c4de25070ff61b72528e685e52227a
         errors+= action("");
         if(token == RPAREN_T){
 	  if (!(no_return) || on_return) {
