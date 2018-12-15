@@ -220,29 +220,6 @@ int SyntacticalAnalyzer::stmt(string pass){
 	if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && !(no_return)) 
     {
 	  codeGen->WriteCode(1, "return "); 
-<<<<<<< HEAD
-	} 
-    else 
-    {
-	  no_return = true;
-	}
-
-	codeGen->WriteCode(0, "(");
-    errors+= action("");
-    if(token == RPAREN_T)
-    {
-	    codeGen->WriteCode(0, ")");
-        if (!(no_return)) 
-            codeGen->WriteCode(0, ";\n");
-
-        token = lex->GetToken();
-    }
-    else
-    {
-        writeLstExpected(RPAREN_T);
-        errors++;
-    }
-=======
 	} else if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && no_return) {
 	  codeGen->WriteCode(0, "(");
 	} else {
@@ -259,7 +236,6 @@ int SyntacticalAnalyzer::stmt(string pass){
             writeLstExpected(RPAREN_T);
             errors++;
         }
->>>>>>> 2d95b3edd1a63e82c08c8c893944bf8b74c68c01
     }
     else if (token == NUMLIT_T || token ==  STRLIT_T || token ==  SQUOTE_T) {
         printP2FileUsing("7");
