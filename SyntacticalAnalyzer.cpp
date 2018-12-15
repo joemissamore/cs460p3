@@ -206,6 +206,8 @@ int SyntacticalAnalyzer::stmt(string pass){
     validateToken(STMT_F);
     Debug("Stmt()");
 
+    cout << "stmt() :: Pass: " << pass << endl;
+    
     if(token==IDENT_T){
         printP2FileUsing("8");
         token = lex->GetToken();
@@ -213,13 +215,16 @@ int SyntacticalAnalyzer::stmt(string pass){
     else if (token == LPAREN_T){
         printP2FileUsing("9");
         token = lex->GetToken();
+	
 	if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && !(no_return)) {
 	  codeGen->WriteCode(1, "return "); 
 	} else {
 	  no_return = true;
 	}
+	codeGen->WriteCode(0, "(");
         errors+= action("");
         if(token == RPAREN_T){
+	  codeGen->WriteCode(0, ")");
 	  if (!(no_return)) {
 	    codeGen->WriteCode(0, ";\n");
 	  }
@@ -248,6 +253,8 @@ int SyntacticalAnalyzer::stmt_pair_body(string pass){
     printP2File("Stmt_Pair_Body", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(STMT_PAIR_BODY_F);
 
+    cout << "stmt_pair_body() :: Pass: " << pass << endl;
+    
     if(token == ELSE_T)
     {
         printP2FileUsing("23");
@@ -289,6 +296,8 @@ int SyntacticalAnalyzer::stmt_list(string pass)
     int errors = 0;
     printP2File("Stmt_List", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(STMT_LIST_F);
+
+    cout << "stmt_list() :: Pass: " << pass << endl;
     
     if (token == LPAREN_T || token == IDENT_T || token == NUMLIT_T || token == STRLIT_T || token == SQUOTE_T)
     {
@@ -315,6 +324,8 @@ int SyntacticalAnalyzer::more_defines(string pass){
     printP2File("More_Defines", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(MORE_DEFINES_F);
 
+    cout << "more_defines() :: Pass: " << pass << endl;
+    
     if (token == IDENT_T)
     {
         printP2FileUsing("3");
@@ -363,6 +374,8 @@ int SyntacticalAnalyzer::define(string pass){
     int errors = 0;
     printP2File("Define", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(DEFINE_F);
+
+    cout << "define() :: Pass: " << pass << endl;
     
     if(token == DEFINE_T){
         printP2FileUsing("4");
@@ -451,6 +464,8 @@ int SyntacticalAnalyzer::action(string pass) {
     validateToken(ACTION_F);
     Debug("Action()");
 
+    cout << "action() :: Pass: " << pass << endl;
+    
     switch (token) {
 
         case IF_T:
@@ -549,7 +564,7 @@ int SyntacticalAnalyzer::action(string pass) {
             printP2FileUsing("37");
             token = lex->GetToken();
             errors += stmt("-");
-            errors += stmt_list("");
+            errors += stmt_list("-");
 	    break;
 
         case DIV_T:
@@ -613,7 +628,10 @@ int SyntacticalAnalyzer::action(string pass) {
 	    codeGen->WriteCode(0, lex->GetLexeme() + "(");
             token = lex->GetToken();
             errors += stmt_list("");
-	    codeGen->WriteCode(0, ") ");
+	    if (token != RPAREN_T) {
+	      codeGen->WriteCode(0, ", ");
+	    }
+	    codeGen->WriteCode(0, ")");
             break;
 
         case DISPLAY_T:
@@ -943,8 +961,17 @@ int SyntacticalAnalyzer::literal(string pass)
     if (token == NUMLIT_T)
     {
         printP2FileUsing("10");
-	codeGen->WriteCode(0, "Object (" + lex->GetLexeme() + ") " + pass + " ");
-        token = lex->GetToken();
+	string hold = lex->GetLexeme();
+	token = lex->GetToken();
+	if (pass != "") {
+	  if (token != RPAREN_T) {
+	    codeGen->WriteCode(0, "Object (" + hold + ") " + pass + " ");
+	  } else {
+	    codeGen->WriteCode(0," " + pass + " " + "Object (" + hold + ")");
+	  }
+	} else {
+	  codeGen->WriteCode(0, "Object (" + hold + ")");
+	}
     }
 
     else if (token == STRLIT_T)
@@ -1328,4 +1355,3 @@ string SyntacticalAnalyzer::arith_helper() {
         return "ERROR";
     }
 }
-
