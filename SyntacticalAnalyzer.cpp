@@ -220,6 +220,7 @@ int SyntacticalAnalyzer::stmt(string pass){
 	if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && !(no_return)) 
     {
 	  codeGen->WriteCode(1, "return "); 
+<<<<<<< HEAD
 	} 
     else 
     {
@@ -241,6 +242,24 @@ int SyntacticalAnalyzer::stmt(string pass){
         writeLstExpected(RPAREN_T);
         errors++;
     }
+=======
+	} else if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && no_return) {
+	  codeGen->WriteCode(0, "(");
+	} else {
+	  no_return = true;
+	}
+        errors+= action("");
+        if(token == RPAREN_T){
+	  if (!(no_return)) {
+	    codeGen->WriteCode(0, ";)\n");
+	  }
+	  token = lex->GetToken();
+        }
+        else{
+            writeLstExpected(RPAREN_T);
+            errors++;
+        }
+>>>>>>> 2d95b3edd1a63e82c08c8c893944bf8b74c68c01
     }
     else if (token == NUMLIT_T || token ==  STRLIT_T || token ==  SQUOTE_T) {
         printP2FileUsing("7");
@@ -310,7 +329,7 @@ int SyntacticalAnalyzer::stmt_list(string pass)
     {
         printP2FileUsing("5");
         errors += stmt(pass);
-        errors+= stmt_list(pass);
+        errors+= stmt_list("");
     }
 
     else if (token == RPAREN_T)
@@ -478,8 +497,10 @@ int SyntacticalAnalyzer::action(string pass) {
 
         case IF_T:
             printP2FileUsing("24");
+	    codeGen->WriteCode(1, "if ");
             token = lex->GetToken();
             errors += stmt("");
+	    codeGen->WriteCode(0, "){\n");
 	    no_return = false; // set to true in stmt, rule 9
             errors += stmt("");
             errors += else_part("");
@@ -517,19 +538,19 @@ int SyntacticalAnalyzer::action(string pass) {
         case AND_T:
             printP2FileUsing("28");
             token = lex->GetToken();
-            errors += stmt_list("");
+            errors += stmt_list("&&");
             break;
 
         case OR_T:
             printP2FileUsing("29");
             token = lex->GetToken();
-            errors += stmt_list("");
+            errors += stmt_list("||");
             break;
 
         case NOT_T:
             printP2FileUsing("30");
             token = lex->GetToken();
-            errors += stmt("");
+            errors += stmt("!=");
             break;
 
         case NUMBERP_T:
@@ -592,7 +613,7 @@ int SyntacticalAnalyzer::action(string pass) {
             printP2FileUsing("40");
             token = lex->GetToken();
             errors += stmt("");
-            errors += stmt("");
+            errors += stmt("%");
             break;
 
         case ROUND_T:
@@ -604,31 +625,31 @@ int SyntacticalAnalyzer::action(string pass) {
         case EQUALTO_T:
             printP2FileUsing("42");
             token = lex->GetToken();
-            errors += stmt_list("");
+            errors += stmt_list("==");
             break;
 
         case GT_T:
             printP2FileUsing("43");
             token = lex->GetToken();
-            errors += stmt_list("");
+            errors += stmt_list(">");
             break;
 
         case LT_T:
             printP2FileUsing("44");
             token = lex->GetToken();
-            errors += stmt_list("");
+            errors += stmt_list("<");
             break;
             
         case GTE_T:
             printP2FileUsing("45");
             token = lex->GetToken();
-            errors += stmt_list("");
+            errors += stmt_list(">=");
             break;
 
         case LTE_T:
             printP2FileUsing("46");
             token = lex->GetToken();
-            errors += stmt_list("");
+            errors += stmt_list("<=");
             break;
 
         case IDENT_T:
@@ -690,6 +711,7 @@ int SyntacticalAnalyzer::any_other_token(string pass) {
 
         case IDENT_T:
             printP2FileUsing("51");
+	    codeGen->WriteCode(0, lex->GetLexeme());
             token = lex->GetToken();
             break;
 
@@ -920,7 +942,9 @@ int SyntacticalAnalyzer::else_part(string pass)
     if (token == LPAREN_T || token == IDENT_T || token == NUMLIT_T || token == STRLIT_T || token == SQUOTE_T)
     {
         printP2FileUsing("18");
+	codeGen->WriteCode(1, "} else {\n");
         errors += stmt("");
+	codeGen->WriteCode(0, "}\n");
     }
 
     else if (token == RPAREN_T)
@@ -953,7 +977,9 @@ int SyntacticalAnalyzer::quoted_lit(string pass)
     else
     {
         printP2FileUsing("13");
+	codeGen->WriteCode(0, "\"");
         errors += any_other_token("");
+	codeGen->WriteCode(0, "\"");
     }
 
     printP2Exiting("Quoted_Lit", lex->GetTokenName(token));
