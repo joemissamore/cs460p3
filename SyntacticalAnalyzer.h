@@ -97,7 +97,7 @@ class SyntacticalAnalyzer
     int stmt(string pass);
     int literal(string pass);
     int quoted_lit(string pass);
-    int more_tokens(string pass);
+    int more_tokens(string pass, bool prevCalled=false);
     int param_list(string pass);
     int else_part(string pass);
     int stmt_pair(string pass);
