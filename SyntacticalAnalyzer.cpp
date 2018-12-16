@@ -365,36 +365,6 @@ int SyntacticalAnalyzer::stmt_list(string pass)
     printP2File("Stmt_List", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(STMT_LIST_F);
 
-    // cout << "---------------------------------" << endl;
-    // cout << "pass (stmt_list): " << pass << endl;
-    // cout << "token: " << lex->GetTokenName(token) << endl;
-    // cout << "action_executed: " << action_executed << endl;
-    // cout << "Number of times action executed: " << numTimesActionExecuted << endl;
-    // cout << "---------------------------------" << endl;
-    // if (pass != "")
-    // if (token == NUMLIT_T && action_executed && pass == "")
-    // {
-        // cout << "stmt_list if cond executed" << endl;
-        // WriteCodeWrapper(0, " " + action_exec_on_type + " ", STMT_LIST_F);
-    // }
-    // else if (pass == "")
-    // {
-        // cout << "else cond executed" << endl;
-        // action_exec_on_type = "";
-        // action_executed = false;
-        // numTimesActionExecuted = 0;
-    // }
-
-    // if (action_executed && numTimesActionExecuted >= 4)
-    // if (action_executed)
-    // {
-        // numTimesActionExecuted++;
-        // cout << "Number of times action executed: " << numTimesActionExecuted << endl;
-        // cout << "action_exec_on_type: " << action_exec_on_type << endl;
-
-        // WriteCodeWrapper(0, " " + action_exec_on_type + " ", STMT_LIST_F);
-    // }
-
     if (token == LPAREN_T || token == IDENT_T || token == NUMLIT_T || token == STRLIT_T || token == SQUOTE_T)
     { // here's where all the operators go that arent - or /
         printP2FileUsing("5");
