@@ -272,13 +272,14 @@ int SyntacticalAnalyzer::stmt(string pass){
         }
         no_return = true;
         }
-        action_executed = true;
-        // numTimesActionExecuted++;
-        action_exec_on_type = lex->GetLexeme();
-        cout << "action_exec_on_type: " << action_exec_on_type << endl;
+        // action_executed = true;
+        // action_exec_on_type = lex->GetLexeme();
+        // cout << "action_exec_on_type: " << action_exec_on_type << endl;
         errors+= action("");
+
         action_executed = false;
         action_exec_on_type = "";
+        
         if(token == RPAREN_T)
         {
             if (!(no_return) || on_return) {
@@ -370,9 +371,9 @@ int SyntacticalAnalyzer::stmt_list(string pass)
         printP2FileUsing("5");
         errors += stmt("");
         if (pass != "") // I have this conditional to prevent wierd spacing
-            WriteCodeWrapper(0, " " + pass + " ", STMT_LIST_F);
+            WriteCodeWrapper(0, " " + pass + " ", STMT_LIST_F, "Writing from pass !=");
         else if (token == NUMLIT_T && action_executed && pass == "")
-            WriteCodeWrapper(0, " " + action_exec_on_type + " ", STMT_LIST_F);
+            WriteCodeWrapper(0, " " + action_exec_on_type + " ", STMT_LIST_F, "Writing from 2nd conditional");
         else
         {
             action_executed = false;
@@ -648,12 +649,16 @@ int SyntacticalAnalyzer::action(string pass) {
             break;
 
         case PLUS_T:
-	    printP2FileUsing("36");
-	    token = lex->GetToken();
-	    errors += stmt_list("+");
+            action_executed = true;
+            action_exec_on_type = lex->GetLexeme();
+            printP2FileUsing("36");
+            token = lex->GetToken();
+            errors += stmt_list("+");
 	    break;
 
        case MINUS_T: // the next two cases are the only that dont pass the operator 
+            action_executed = true;
+            action_exec_on_type = lex->GetLexeme();
             printP2FileUsing("37");
             token = lex->GetToken();
             errors += stmt("");
@@ -662,6 +667,8 @@ int SyntacticalAnalyzer::action(string pass) {
 	    break;
 
         case DIV_T:
+            action_executed = true;
+            action_exec_on_type = lex->GetLexeme();
 	        printP2FileUsing("38");
             token = lex->GetToken();
             errors += stmt("");
@@ -670,12 +677,16 @@ int SyntacticalAnalyzer::action(string pass) {
 	    break;
 
         case MULT_T:
+            action_executed = true;
+            action_exec_on_type = lex->GetLexeme();
 	        printP2FileUsing("39");
             token = lex->GetToken();
             errors += stmt_list("*");
 	    break;
 
         case MODULO_T:
+            action_executed = true;
+            action_exec_on_type = lex->GetLexeme();
             printP2FileUsing("40");
             token = lex->GetToken();
             errors += stmt("");
@@ -991,10 +1002,12 @@ int SyntacticalAnalyzer::param_list(string pass) {
 
     if (token == IDENT_T) 
     {
+        // if (pass != "")
+        //     WriteCodeWrapper(0, " , ");
         WriteCodeWrapper(0,"Object " + lex->GetLexeme() + " ", PARAM_LIST_F);
         printP2FileUsing("16");
         token = lex->GetToken(); 
-        errors += param_list("");
+        errors += param_list(",");
     }
 
     else if (token == RPAREN_T)
@@ -1229,11 +1242,13 @@ template<typename A> void SyntacticalAnalyzer::PrintQ(A q)
 }
 
 // void WriteCodeWrapper(int, string, functionRuleNumberMapping);
-void SyntacticalAnalyzer::WriteCodeWrapper(int tabs, string write, functionRuleNumberMapping funky)
+void SyntacticalAnalyzer::WriteCodeWrapper(int tabs, string write, functionRuleNumberMapping funky, string extra)
 {
     cout << "---------------------------------" << endl;
     cout << "WRITING CODE: " << write << endl;
     cout << "FROM FUNCTION: " << GetFunkyName(funky) << endl;
+    if (extra != "")
+        cout << "EXTRA: " << extra << endl;
     cout << "---------------------------------" << endl;
     codeGen->WriteCode(tabs, write);
     

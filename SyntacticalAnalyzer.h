@@ -118,7 +118,7 @@ class SyntacticalAnalyzer
     void printP2Exiting(const string &funkyName, const string &token);
     bool isValidToken(functionRuleNumberMapping fMap);
     void validateToken(functionRuleNumberMapping fMap);
-    void WriteCodeWrapper(int, string, functionRuleNumberMapping);
+    void WriteCodeWrapper(int, string, functionRuleNumberMapping, string extra="");
     string GetFunkyName(functionRuleNumberMapping);
     /* Helper functions - CodeGen */
     void GetTokLex();
