@@ -28,6 +28,25 @@ LexicalAnalyzer.o : LexicalAnalyzer.cpp LexicalAnalyzer.h
 SetLimits.o : SetLimits.cpp SetLimits.h
 	g++ -g -c SetLimits.cpp
 
+submit:	Makefile Project3.cpp Object.cpp Object.h CodeGenerator.cpp CodeGenerator.h SyntacticalAnalyzer.cpp SyntacticalAnalyzer.h LexicalAnalyzer.cpp LexicalAnalyzer.h SetLimits.cpp SetLimits.h README.txt
+	rm -rf Team4P3
+	mkdir Team4P3
+	cp Makefile Team4P3
+	cp Project3.cpp Team4P3
+	cp Object.cpp Team4P3
+	cp Object.h Team4P3
+	cp CodeGenerator.cpp Team4P3
+	cp CodeGenerator.h Team4P3
+	cp SyntacticalAnalyzer.cpp Team4P3
+	cp SyntacticalAnalyzer.h Team4P3
+	cp LexicalAnalyzer.cpp Team4P3
+	cp LexicalAnalyzer.h Team4P3
+	cp SetLimits.cpp Team4P3
+	cp SetLimits.h Team4P3
+	cp README.txt Team4P3
+	tar cvfz Team4P3.tgz Team4P3
+	cp Team4P3.tgz ~tiawatts/cs460drop
+
 clean: 
 	rm -f *.o *.out
 	cd P3Tests/

@@ -214,11 +214,7 @@ int SyntacticalAnalyzer::stmt(string pass){
 	if(!(no_return)) {
 	  codeGen->WriteCode(1, "return ");
 	}
-	if (pass != "") {
 	    codeGen->WriteCode(0, "Object (" + lex->GetLexeme() + ")");
-	} else {
-	   codeGen->WriteCode(0, "Object (" + lex->GetLexeme() + ")");
-	}
 	if (!(no_return)){
 	  codeGen->WriteCode(0, ";\n");
 	}
@@ -508,7 +504,7 @@ int SyntacticalAnalyzer::action(string pass) {
 	    codeGen->WriteCode(1, "if ");
             token = lex->GetToken();
             errors += stmt("");
-	    codeGen->WriteCode(0, "){\n");
+	    codeGen->WriteCode(0, "{\n");
 	    no_return = false; // set to true in stmt, rule 9
             errors += stmt("");
             errors += else_part("");
