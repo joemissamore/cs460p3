@@ -85,6 +85,8 @@ class SyntacticalAnalyzer
     ofstream p2file;
     string lexeme;
     bool no_return; // 10/10 name
+    bool action_executed;
+    string action_exec_on_type;
 
     /* Token mapper */
     map <token_type, tokenMapper> row; 

@@ -77,7 +77,8 @@ SyntacticalAnalyzer::SyntacticalAnalyzer (char * filename)
     row[DISPLAY_T] = DISPLAY_M;
     row[NEWLINE_T] = NEWLINE_M; // 34
     
-
+    action_executed = false;
+    action_exec_on_type = "";
     lex = new LexicalAnalyzer (filename);
 
     string name = filename;
@@ -219,61 +220,69 @@ int SyntacticalAnalyzer::stmt(string pass){
     
     if(token==IDENT_T){
         printP2FileUsing("8");
-	if(!(no_return)) {
-	  codeGen->WriteCode(1, "return ");
-	}
-	    codeGen->WriteCode(0, "Object (" + lex->GetLexeme() + ")");
-	if (!(no_return)){
-	  codeGen->WriteCode(0, ";\n");
-	}
-	token = lex->GetToken();
+        if(!(no_return)) {
+            codeGen->WriteCode(1, "return ");
+        }
+        codeGen->WriteCode(0, "Object (" + lex->GetLexeme() + ")");
+        if (!(no_return)){
+            codeGen->WriteCode(0, ";\n");
+        }
+        token = lex->GetToken();
     }
-    else if (token == LPAREN_T){
+    else if (token == LPAREN_T)
+    {
         printP2FileUsing("9");
         token = lex->GetToken();
 
-	bool on_return = false; // to recognize when we are in a return statement
-	bool no_close = false; // for all the statements that can't be wrapped in parentheses
+        bool on_return = false; // to recognize when we are in a return statement
+        bool no_close = false; // for all the statements that can't be wrapped in parentheses
 
-	if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && !(no_return)) 
-	  { // this allows for scheme style returns
-	  codeGen->WriteCode(1, "return ");
-	  no_return = true;
-	  on_return = true;
-	  no_close = true;
-	} else {
-	  if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T)){
-	    codeGen->WriteCode(0, "(");
-	  } else {
-	    no_close = true;
-	  }
-	  no_return = true;
-	}
+        if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && !(no_return)) 
+        { // this allows for scheme style returns
+            codeGen->WriteCode(1, "return ");
+            no_return = true;
+            on_return = true;
+            no_close = true;
+        } else {
+        if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T)){
+            codeGen->WriteCode(0, "(");
+        } else {
+            no_close = true;
+        }
+        no_return = true;
+        }
+        action_executed = true;
+        action_exec_on_type = lex->GetLexeme();
+        cout << "action_exec_on_type: " << action_exec_on_type << endl;
         errors+= action("");
-        if(token == RPAREN_T){
-	  if (!(no_return) || on_return) {
-	    codeGen->WriteCode(0, ";\n");
-	    no_return = false;
-	  }
-	  if (!(no_close) && !(on_return))
-	    codeGen->WriteCode(0, ")");
-	  token = lex->GetToken();
-        }
-        else{
-            writeLstExpected(RPAREN_T);
-            errors++;
-        }
+        
+        if(token == RPAREN_T)
+        {
+            if (!(no_return) || on_return) {
+                codeGen->WriteCode(0, ";\n");
+                no_return = false;
+            }
+            
+            if (!(no_close) && !(on_return))
+                codeGen->WriteCode(0, ")");
+            
+            token = lex->GetToken();
+            }
+            else{
+                writeLstExpected(RPAREN_T);
+                errors++;
+            }
     }
     else if (token == NUMLIT_T || token ==  STRLIT_T || token ==  SQUOTE_T) {
         printP2FileUsing("7");
 
-	if (!(no_return)) {
-	  codeGen->WriteCode(1, "return ");
-	}
+        if (!(no_return)) {
+            codeGen->WriteCode(1, "return ");
+        }
         errors+=literal(pass);
-	if (!(no_return)) {
-	  codeGen->WriteCode(0, ";\n");
-	}
+        if (!(no_return)) {
+            codeGen->WriteCode(0, ";\n");
+        }
     }
     else {
         errors++;
@@ -331,12 +340,30 @@ int SyntacticalAnalyzer::stmt_list(string pass)
     printP2File("Stmt_List", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(STMT_LIST_F);
 
+    cout << "---------------------------------" << endl;
+    cout << "pass (stmt_list): " << pass << endl;
+    cout << "token: " << lex->GetTokenName(token) << endl;
+    cout << "action_executed: " << action_executed << endl;
+    cout << "---------------------------------" << endl;
+    if (token == NUMLIT_T && action_executed && pass == "")
+    {
+        cout << "stmt_list if cond executed" << endl;
+        codeGen->WriteCode(0, " " + action_exec_on_type + " ");
+    }
+    else if (pass == "")
+    {
+        cout << "else cond executed" << endl;
+        action_exec_on_type = "";
+        action_executed = false;
+    }
+
     if (token == LPAREN_T || token == IDENT_T || token == NUMLIT_T || token == STRLIT_T || token == SQUOTE_T)
-      { // here's where all the operators go that arent - or /
+    { // here's where all the operators go that arent - or /
         printP2FileUsing("5");
         errors += stmt("");
-	if (pass != "") // I have this conditional to prevent wierd spacing
-	  codeGen->WriteCode(0, " " + pass + " ");
+        // if (pass != "") // I have this conditional to prevent wierd spacing
+            // codeGen->WriteCode(0, " " + pass + " ");
+        
         errors+= stmt_list("");
     }
 
@@ -1029,19 +1056,19 @@ int SyntacticalAnalyzer::literal(string pass)
     if (token == NUMLIT_T)
     {
         printP2FileUsing("10");
-	string hold = lex->GetLexeme();
-	token = lex->GetToken();
-	if (pass != "") 
-    {
-	  if (token != RPAREN_T) {
-	    codeGen->WriteCode(0, "Object (" + hold + ") " + pass + " ");
-	  } 
-      else {
-	    codeGen->WriteCode(0," " + pass + " " + "Object (" + hold + ")");
-	  }
-	} else {
-	  codeGen->WriteCode(0, "Object (" + hold + ")");
-	}
+        string hold = lex->GetLexeme();
+        token = lex->GetToken();
+        if (pass != "") 
+        {
+            if (token != RPAREN_T) {
+                codeGen->WriteCode(0, "Object (" + hold + ") " + pass + " ");
+            } 
+            else {
+                codeGen->WriteCode(0," " + pass + " " + "Object (" + hold + ")");
+            }
+        } else {
+            codeGen->WriteCode(0, "Object (" + hold + ")");
+        }
     }
 
     else if (token == STRLIT_T)
