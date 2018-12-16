@@ -98,6 +98,8 @@ SyntacticalAnalyzer::SyntacticalAnalyzer (char * filename)
     action_executed = false;
     action_exec_on_type = "";
     action_executed_IDENT_T = false;
+    exited_action_on_RPARENT_T = false;
+    action_display = false;
     numTimesActionExecuted = 0;
 
     lex = new LexicalAnalyzer (filename);
@@ -394,6 +396,20 @@ int SyntacticalAnalyzer::stmt_list(string pass)
 
         // if (action_executed_IDENT_T && token == RPAREN_T)
             // action_executed_IDENT_T = false;
+
+        if (!exited_action_on_RPARENT_T && token == LPAREN_T && action_display == false)
+        {
+            WriteCodeWrapper(0, " , ", STMT_LIST_F, "EXITED ACTION ON RPAREN_T");
+            exited_action_on_RPARENT_T = false;
+        }
+        // else
+        // {
+            // exited_action_on_RPARENT_T = false;
+        // }
+        // if (action_display)
+            // action_display = false;
+            
+        
 
         
         errors+= stmt_list("");
@@ -763,6 +779,7 @@ int SyntacticalAnalyzer::action(string pass) {
 
         case DISPLAY_T:
             printP2FileUsing("48");
+            action_display = true;
             WriteCodeWrapper(1, "cout << ", ACTION_F);
             token = lex->GetToken();
             errors += stmt("");
@@ -770,6 +787,7 @@ int SyntacticalAnalyzer::action(string pass) {
             break;
 
         case NEWLINE_T:
+            action_display = true;
             Debug("Action() - NEWLINE_T");
 	        WriteCodeWrapper(1, "cout << endl;\n", ACTION_F); // we're double printing semicolons and \n's
             printP2FileUsing("49");
@@ -782,6 +800,8 @@ int SyntacticalAnalyzer::action(string pass) {
             break;
     }
 
+    // action_display = false;
+    exited_action_on_RPARENT_T = true;
     printP2Exiting("Action", lex->GetTokenName(token));
     return errors;
 }
@@ -797,11 +817,29 @@ int SyntacticalAnalyzer::any_other_token(string pass, bool prevCalled) {
     if (prevCalled)
         WriteCodeWrapper(0, " ", ANY_OTHER_TOKEN_F);
 
-    switch (token) {
+    if (token != STRLIT_T)
+        WriteCodeWrapper(0, lex->GetLexeme(), ANY_OTHER_TOKEN_F);
+    else{
+        string _lex = lex->GetLexeme();
+        string _write = "";
+        for (int i = 0; i < _lex.size(); i++)
+        {
+            if (_lex[i] != '\"')
+            {
+                _write += "\\";
+                _write += "\"";
+            }
+                
 
+        }
+        WriteCodeWrapper(0, _write, ANY_OTHER_TOKEN_F);
+    }
+
+    switch (token) {
+        
         case LPAREN_T:
             // If it an LPARENT_T then its a quoted list
-            WriteCodeWrapper(0, "(", ANY_OTHER_TOKEN_F);
+            // WriteCodeWrapper(0, "(", ANY_OTHER_TOKEN_F);
             printP2FileUsing("50");
             token = lex->GetToken();
             errors += more_tokens("");
@@ -816,17 +854,18 @@ int SyntacticalAnalyzer::any_other_token(string pass, bool prevCalled) {
 
         case IDENT_T:
             printP2FileUsing("51");
-	    WriteCodeWrapper(0, lex->GetLexeme(), ANY_OTHER_TOKEN_F);
+	        // WriteCodeWrapper(0, lex->GetLexeme(), ANY_OTHER_TOKEN_F);
             token = lex->GetToken();
             break;
 
         case NUMLIT_T:
-            WriteCodeWrapper(0, lex->GetLexeme(), ANY_OTHER_TOKEN_F);
+            // WriteCodeWrapper(0, lex->GetLexeme(), ANY_OTHER_TOKEN_F);
             printP2FileUsing("52");
             token = lex->GetToken();
             break;
 
         case STRLIT_T:
+            // WriteCodeWrapper(0, lex->GetLexeme(), ANY_OTHER_TOKEN_F);
             printP2FileUsing("53");
             token = lex->GetToken();
             break;
