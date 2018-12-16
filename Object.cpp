@@ -2,7 +2,7 @@
 #include <sstream>
 #include <cstdlib>
 
-#define DEBUG 1
+#define DEBUG 0
 #define debug if (DEBUG) cout
 
 string nameof [] = {"unknown", "integer", "real", "string", "list"};

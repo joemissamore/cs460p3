@@ -1,8 +1,8 @@
 P3DEPENDENCIES = Project3.o CodeGenerator.o SyntacticalAnalyzer.o LexicalAnalyzer.o SetLimits.o
 CLEANEXT = *.p1 *.p2 *.lst *.dbg
 
-Project3.out : ${P3DEPENDENCIES}
-	g++ -g -o Project3.out ${P3DEPENDENCIES}
+P3.out : ${P3DEPENDENCIES}
+	g++ -g -o P3.out ${P3DEPENDENCIES}
 
 test.out : Test.o Object.o
 	g++ -g -o test.out Test.o Object.o

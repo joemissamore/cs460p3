@@ -10,7 +10,7 @@ Description: This program analyzes the lexemes, and syntax, of a given scheme pr
 #include <iomanip>
 #include <fstream>
 #include "SyntacticalAnalyzer.h"
-#define DEBUG 1
+#define DEBUG 0
 #define debug if (DEBUG) cout
 
 using namespace std;
