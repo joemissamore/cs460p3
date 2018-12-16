@@ -97,6 +97,8 @@ SyntacticalAnalyzer::SyntacticalAnalyzer (char * filename)
     
     action_executed = false;
     action_exec_on_type = "";
+    numTimesActionExecuted = 0;
+
     lex = new LexicalAnalyzer (filename);
 
     string name = filename;
@@ -271,10 +273,12 @@ int SyntacticalAnalyzer::stmt(string pass){
         no_return = true;
         }
         action_executed = true;
+        // numTimesActionExecuted++;
         action_exec_on_type = lex->GetLexeme();
         cout << "action_exec_on_type: " << action_exec_on_type << endl;
         errors+= action("");
-        
+        action_executed = false;
+        action_exec_on_type = "";
         if(token == RPAREN_T)
         {
             if (!(no_return) || on_return) {
@@ -365,25 +369,46 @@ int SyntacticalAnalyzer::stmt_list(string pass)
     // cout << "pass (stmt_list): " << pass << endl;
     // cout << "token: " << lex->GetTokenName(token) << endl;
     // cout << "action_executed: " << action_executed << endl;
+    // cout << "Number of times action executed: " << numTimesActionExecuted << endl;
     // cout << "---------------------------------" << endl;
-    if (token == NUMLIT_T && action_executed)
-    {
-        cout << "stmt_list if cond executed" << endl;
-        WriteCodeWrapper(0, " " + action_exec_on_type + " ", STMT_LIST_F);
-    }
-    else if (token != NUMLIT_T)
-    {
+    // if (pass != "")
+    // if (token == NUMLIT_T && action_executed && pass == "")
+    // {
+        // cout << "stmt_list if cond executed" << endl;
+        // WriteCodeWrapper(0, " " + action_exec_on_type + " ", STMT_LIST_F);
+    // }
+    // else if (pass == "")
+    // {
         // cout << "else cond executed" << endl;
-        action_exec_on_type = "";
-        action_executed = false;
-    }
+        // action_exec_on_type = "";
+        // action_executed = false;
+        // numTimesActionExecuted = 0;
+    // }
+
+    // if (action_executed && numTimesActionExecuted >= 4)
+    // if (action_executed)
+    // {
+        // numTimesActionExecuted++;
+        // cout << "Number of times action executed: " << numTimesActionExecuted << endl;
+        // cout << "action_exec_on_type: " << action_exec_on_type << endl;
+
+        // WriteCodeWrapper(0, " " + action_exec_on_type + " ", STMT_LIST_F);
+    // }
 
     if (token == LPAREN_T || token == IDENT_T || token == NUMLIT_T || token == STRLIT_T || token == SQUOTE_T)
     { // here's where all the operators go that arent - or /
         printP2FileUsing("5");
         errors += stmt("");
-        // if (pass != "") // I have this conditional to prevent wierd spacing
-            // codeGen->WriteCode(0, " " + pass + " ");
+        if (pass != "") // I have this conditional to prevent wierd spacing
+            WriteCodeWrapper(0, " " + pass + " ", STMT_LIST_F);
+        else if (token == NUMLIT_T && action_executed && pass == "")
+            WriteCodeWrapper(0, " " + action_exec_on_type + " ", STMT_LIST_F);
+        else
+        {
+            action_executed = false;
+            action_exec_on_type = "";
+        }
+
         
         errors+= stmt_list("");
     }
@@ -667,7 +692,7 @@ int SyntacticalAnalyzer::action(string pass) {
 	    break;
 
         case DIV_T:
-	    printP2FileUsing("38");
+	        printP2FileUsing("38");
             token = lex->GetToken();
             errors += stmt("");
 	        WriteCodeWrapper(0, " / ", ACTION_F);
