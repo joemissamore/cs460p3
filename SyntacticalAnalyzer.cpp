@@ -217,7 +217,7 @@ int SyntacticalAnalyzer::stmt(string pass){
     else if (token == LPAREN_T){
         printP2FileUsing("9");
         token = lex->GetToken();
-	
+	bool on_return = false; // for taking on semi colons
 	if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && !(no_return)) 
 	  {
 	  codeGen->WriteCode(1, "return ");
@@ -970,13 +970,13 @@ int SyntacticalAnalyzer::quoted_lit(string pass)
 
     else
     {
-        if (token == LPAREN_T)
-            codeGen->WriteCode(0, "Object (");
+        // if (token == LPAREN_T)
+            // codeGen->WriteCode(0, "Object (\"");
 
         printP2FileUsing("13");
-	codeGen->WriteCode(0, "Object (\"");
+	    codeGen->WriteCode(0, "Object (\"");
         errors += any_other_token("");
-	codeGen->WriteCode(0, "\")");
+	    codeGen->WriteCode(0, "\")");
     }
 
     printP2Exiting("Quoted_Lit", lex->GetTokenName(token));
