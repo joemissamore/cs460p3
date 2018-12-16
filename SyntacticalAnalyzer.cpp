@@ -1,3 +1,11 @@
+/*
+Assignment: CS460 Fall 2018 - Project 3: Code Generator
+Names: Sergio Hernandez, Joe Missamore, John Salman
+Date: 12/15/18
+Description: This program analyzes the lexemes, and syntax, of a given scheme program. It uses 
+             the scheme program to generate equivalent C++ code.
+ */
+
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -224,11 +232,11 @@ int SyntacticalAnalyzer::stmt(string pass){
         printP2FileUsing("9");
         token = lex->GetToken();
 
-	bool on_return = false;
-	bool no_close = false;
+	bool on_return = false; // to recognize when we are in a return statement
+	bool no_close = false; // for all the statements that can't be wrapped in parentheses
 
 	if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && !(no_return)) 
-	  {
+	  { // this allows for scheme style returns
 	  codeGen->WriteCode(1, "return ");
 	  no_return = true;
 	  on_return = true;
@@ -281,8 +289,6 @@ int SyntacticalAnalyzer::stmt_pair_body(string pass){
     printP2File("Stmt_Pair_Body", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(STMT_PAIR_BODY_F);
 
-    cout << "stmt_pair_body() :: Pass: " << pass << endl;
-    
     if(token == ELSE_T)
     {
         printP2FileUsing("23");
@@ -325,13 +331,11 @@ int SyntacticalAnalyzer::stmt_list(string pass)
     printP2File("Stmt_List", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(STMT_LIST_F);
 
-    cout << "stmt_list() :: Pass: " << pass << endl;
-    
     if (token == LPAREN_T || token == IDENT_T || token == NUMLIT_T || token == STRLIT_T || token == SQUOTE_T)
-    {
+      { // here's where all the operators go that arent - or /
         printP2FileUsing("5");
         errors += stmt("");
-	if (pass != "")
+	if (pass != "") // I have this conditional to prevent wierd spacing
 	  codeGen->WriteCode(0, " " + pass + " ");
         errors+= stmt_list("");
     }
@@ -353,9 +357,6 @@ int SyntacticalAnalyzer::more_defines(string pass){
     int errors = 0;
     printP2File("More_Defines", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(MORE_DEFINES_F);
-
-    cout << "more_defines() :: Pass: " << pass << endl;
-    
     if (token == IDENT_T)
     {
         printP2FileUsing("3");
@@ -406,13 +407,11 @@ int SyntacticalAnalyzer::define(string pass){
     validateToken(DEFINE_F);
     Debug("Define()");
 
-    cout << "define() :: Pass: " << pass << endl;
-    
     if(token == DEFINE_T){
         printP2FileUsing("4");
         token = lex->GetToken();
 
-	bool not_main = true;
+	bool not_main = true; // this is to ensure not all functions have return 0;
         if(token==LPAREN_T)
             token = lex->GetToken();
         else 
@@ -494,8 +493,6 @@ int SyntacticalAnalyzer::action(string pass) {
     printP2File("Action", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(ACTION_F);
     Debug("Action()");
-
-    cout << "action() :: Pass: " << pass << endl;
     
     switch (token) {
 
@@ -503,7 +500,7 @@ int SyntacticalAnalyzer::action(string pass) {
             printP2FileUsing("24");
 	    codeGen->WriteCode(1, "if ");
             token = lex->GetToken();
-            errors += stmt("");
+            errors += stmt(""); // let stmt wrap the conditional in parentheses
 	    codeGen->WriteCode(0, "{\n");
 	    no_return = false; // set to true in stmt, rule 9
             errors += stmt("");
@@ -608,7 +605,7 @@ int SyntacticalAnalyzer::action(string pass) {
 	    errors += stmt_list("+");
 	    break;
 
-        case MINUS_T:
+       case MINUS_T: // the next two cases are the only that dont pass the operator 
             printP2FileUsing("37");
             token = lex->GetToken();
             errors += stmt("");
@@ -1161,80 +1158,6 @@ void SyntacticalAnalyzer::GetTokLex()
 	lexeme = lex->GetLexeme();
 }
 
-void SyntacticalAnalyzer::PLUS()
-{
-	Debug("PLUS()");
-	/* By the time this function is 
-	 * entered the number of LPAREN_T
-	 * will be 1 and we will have also
-	 * passed a '+' so this will be added
-	 * to the queue. 
-	 * 
-	 * TODO: Make this for all arithmetic */
-
-	queue<string> vals;
-	queue<string> symbols;
-	symbols.push("+");
-	int numLPAREN_T = 1;
-	int numRPARENT_T = 0;
-	cout << "Token at this point: " << lex->GetLexeme() << endl;
-	/* Assuming no syntax/lexical errs */
-	while (numLPAREN_T != numRPARENT_T)
-	{
-		if (token == PLUS_T)
-		{
-			symbols.push("+");
-			GetTokLex();
-		}
-			
-		if (token == NUMLIT_T)
-		  {
-		    
-		    Debug("NUMLIT_T");
-			vals.push(lexeme);
-			GetTokLex();
-		}
-
-		if (token == LPAREN_T)
-		{
-			numLPAREN_T++;
-			GetTokLex();
-		}
-
-		if (token == RPAREN_T)
-		{
-			numRPARENT_T++;
-			// GetTokLex();
-		}
-
-		
-	}
-	
-	PrintQ(symbols);
-	PrintQ(vals);
-	// debug << "Exited while loop" << endl;
-
-	for (int i = 0; !vals.empty(); i++)
-	{
-		if (i % 2 == 0)
-		{
-		  string str = "Object (" + vals.front() + ")";
-			codeGen->WriteCode(0, str);
-			vals.pop();
-			if (vals.size() != 0)
-				codeGen->WriteCode(0, " ");
-		}
-		else 
-		{
-			codeGen->WriteCode(0, symbols.front() + " ");
-			symbols.pop();
-		}
-		
-	}
-	codeGen->WriteCode(0, ";\n");
-
-}
-
 /* Debugging */
 void SyntacticalAnalyzer::Debug(string function)
 {
@@ -1257,177 +1180,3 @@ template<typename A> void SyntacticalAnalyzer::PrintQ(A q)
 	debug << "-------------------------------" << endl;
 }
 
-
-void SyntacticalAnalyzer::arithmetic() {
-    Debug("ARITHMETIC()");
-    codeGen->WriteCode(0, arith_helper());
-}
-
-string SyntacticalAnalyzer::arith_helper() {
-    Debug("ARITH_HELPER()");
-    cout << "Entered a_helper, current Lexeme: " << lexeme << endl;
-    // so since this program is a code gen built on
-    // top of a SynAnl, we need to write to .p2
-    string oper_sym = "";
-    string operand_1 = "";
-    string operand_2 = "";
-    switch(token) {
-      // gross indents, blame emacs
-    case PLUS_T:
-      printP2FileUsing("36");
-      oper_sym = "+";
-      // entering stmt_list??
-      break;;
-    case MINUS_T:
-      printP2FileUsing("37");
-      oper_sym = "-";
-      break;;
-    case DIV_T:
-      printP2FileUsing("38");
-      oper_sym = "/";
-      break;;
-    case MULT_T:
-      printP2FileUsing("39");
-      oper_sym = "*";
-      break;;
-    default:
-      Debug("ERROR: INVALID OPERATOR");
-      return "ERROR";
-    }
-
-    Debug(oper_sym);
-    GetTokLex(); // As we have already seen the operator
-
-    printP2File("Stmt_List", lex->GetTokenName(token), lex->GetLexeme());
-    printP2FileUsing("5");
-    
-    if (token == NUMLIT_T) {
-        Debug("NUMLIT_T");
-	    // apply rule 10
-	    // <literal> -> NUMLIT_T
-	    printP2File("Stmt", lex->GetTokenName(token), lex->GetLexeme());
-        printP2FileUsing("7");
-	    printP2File("Literal", lex->GetTokenName(token), lex->GetLexeme());
-	    printP2FileUsing("10");
-   	
-	    operand_1 = string("Object (") + lexeme + ") ";
-        GetTokLex(); // maybe move these to below first set of conditionals? 
-
-	    printP2Exiting("Literal", lex->GetTokenName(token));
-        printP2Exiting("Stmt", lex->GetTokenName(token));
-    }
-
-    else if (token == LPAREN_T) {
-        Debug("LPAREN_T");
-    	// apply rule 9
-	    // <stmt> -> LPAREN_T <action> RPAREN_T
-	    printP2File("Stmt", lex->GetTokenName(token), lex->GetLexeme());
-        printP2FileUsing("9");
-	
-	    GetTokLex(); // move past lparen
-	
-        if (token == IDENT_T) { // function
-            operand_1 = lexeme + "(";
-            GetTokLex();
-            while (token != RPAREN_T){
-                if (token == LPAREN_T) {
-                    token = lex->GetToken();
-                    operand_1 += arith_helper() + ") ";
-                    GetTokLex();
-                }
-                else if (token == NUMLIT_T || token == IDENT_T) {
-                    operand_1 += lexeme + ") ";
-                    token = lex->GetToken();
-                }
-            }
-            operand_1 += ") ";
-            cout << "Current Lexeme: " << lexeme << endl;
-        } 
-        else if (token == PLUS_T || token == MINUS_T || token == DIV_T || token == MULT_T) {
-          operand_1 = string("(") + arith_helper() + ") ";
-          cout << "Current Lexeme: " << lexeme << endl;
-        }
-
-	    printP2Exiting("Stmt", lex->GetTokenName(token));
-	
-	    GetTokLex(); // move to next operand
-    }
-
-    else if (token == IDENT_T){ // parameter
-        Debug("IDENT_T");
-	    // apply rule 8
-	    // <stmt> -> IDENT_T
-	    printP2File("Stmt", lex->GetTokenName(token), lex->GetLexeme());
-        printP2FileUsing("8");
-	    printP2Exiting("Stmt", lex->GetTokenName(token));
-	
-        operand_1 = lexeme + " ";
-        GetTokLex();
-    } // else error?
-    cout << "Between operands, current Lexeme: " << lexeme << endl;
-    if (token == NUMLIT_T) {
-        Debug("NUMLIT_T");
-	
-	    printP2File("Stmt", lex->GetTokenName(token), lex->GetLexeme());
-        printP2FileUsing("7");
-	    printP2File("Literal", lex->GetTokenName(token), lex->GetLexeme());
-        printP2FileUsing("10");
-
-        operand_2 = string(" Object (") + lexeme +")";
-        GetTokLex();
-
-	    printP2Exiting("Literal", lex->GetTokenName(token));
-        printP2Exiting("Stmt", lex->GetTokenName(token));
-    }
-
-    else if (token == LPAREN_T) {
-        Debug("LPAREN_T");
-	    // apply rule 9
-        // <stmt> -> LPAREN_T <action> RPAREN_T 
-	    printP2File("Stmt", lex->GetTokenName(token), lex->GetLexeme());
-        printP2FileUsing("9");
-	
-        GetTokLex();
-
-	    if (token == IDENT_T) { // function
-	        operand_2 = string(" ") + lexeme + "(";
-	        GetTokLex();
-            while (token != RPAREN_T){
-                if (token == LPAREN_T) {
-                    token = lex->GetToken();
-                    operand_2 += arith_helper() + ") ";
-                    GetTokLex();
-                }
-                else if (token == NUMLIT_T || token == IDENT_T) {
-                    operand_2 += lexeme;
-                    token = lex->GetToken();
-                }
-            }
-            operand_2 += ")";
-            cout << "Current Lexeme: " << lexeme << endl;
-         
-	    } 
-        else if (token == PLUS_T || token == MINUS_T || token == DIV_T || token == MULT_T) {
-	       operand_2 = string(" (") + arith_helper() + ")";
-	    }
-	
-        GetTokLex(); // to see right paren
-        cout << "Current Lexeme: " << lexeme << endl;
-	    printP2Exiting("Stmt", lex->GetTokenName(token));
-    }
-
-    else if (token == IDENT_T) { // parameter
-        Debug("IDENT_T");
-        operand_2 = string(" ") + lexeme;
-        GetTokLex();
-    } // else error?
-
-    if (token == RPAREN_T) {
-       printP2Exiting("arithmetic", lex->GetTokenName(token));
-
-        return operand_1 + oper_sym + operand_2;
-    } else {
-        Debug("No RPAREN_T found");
-        return "ERROR";
-    }
-}
