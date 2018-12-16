@@ -38,7 +38,6 @@ class Object
 	friend Object cons (const Object & O1, const Object O2);
 	friend Object round (const Object & O);
 	friend ostream & operator << (ostream & outs, const Object & O);
-   
     private:
 	Object (stringstream & ss);
 	void MakeName ();

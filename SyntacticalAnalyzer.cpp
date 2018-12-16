@@ -467,7 +467,11 @@ int SyntacticalAnalyzer::define(string pass){
         if (token == RPAREN_T)
 	{
 	  if (not_main)
-	    codeGen->WriteCode(0, "\n}\n");
+      {
+          codeGen->WriteCode(1, "return Object();");
+          codeGen->WriteCode(0, "\n}\n");
+      }
+	    
 	  token = lex->GetToken();
 	}
 	else
@@ -482,7 +486,7 @@ int SyntacticalAnalyzer::define(string pass){
         errors++;
         writeLstExpected(DEFINE_T);
     }
-
+    
     printP2Exiting("Define", lex->GetTokenName(token));
     return errors;
 }
