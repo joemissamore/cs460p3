@@ -375,7 +375,7 @@ int SyntacticalAnalyzer::stmt_list(string pass)
         errors += stmt("");
 
         /* LOGIC FOR HANDLING ARITHMETIC */
-        if (pass != "") // I have this conditional to prevent wierd spacing
+        if (pass != "" && token != RPAREN_T) // I have this conditional to prevent wierd spacing
             WriteCodeWrapper(0, " " + pass + " ", STMT_LIST_F, "Writing from pass !=");
         else if (token == NUMLIT_T && action_executed && pass == "")
             WriteCodeWrapper(0, " " + action_exec_on_type + " ", STMT_LIST_F, "Writing from 2nd conditional");
@@ -770,10 +770,12 @@ int SyntacticalAnalyzer::action(string pass) {
 	        WriteCodeWrapper(0, lex->GetLexeme() + "(", ACTION_F);
             action_executed_IDENT_T = true;
             token = lex->GetToken();
-            errors += stmt_list("");
+            errors += stmt_list(", ");
+	    /*
             if (token != RPAREN_T) {
                 WriteCodeWrapper(0, ", ", ACTION_F);
             }
+	    */
 	        WriteCodeWrapper(0, ")", ACTION_F);
             break;
 
