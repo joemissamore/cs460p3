@@ -525,8 +525,8 @@ bool nullp (const Object & O)
 
 bool stringp (const Object & O) 
 {
-	//if (O.type == STRING)
-	//	return true;
+	if (O.type == STRING)
+		return true;
 	return false;
 }
 

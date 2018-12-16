@@ -88,6 +88,7 @@ class SyntacticalAnalyzer
     string lexeme;
     bool no_return; // 10/10 name
     bool action_executed;
+    bool action_executed_IDENT_T;
     int numTimesActionExecuted;
     string action_exec_on_type;
 

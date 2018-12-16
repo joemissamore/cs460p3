@@ -97,6 +97,7 @@ SyntacticalAnalyzer::SyntacticalAnalyzer (char * filename)
     
     action_executed = false;
     action_exec_on_type = "";
+    action_executed_IDENT_T = false;
     numTimesActionExecuted = 0;
 
     lex = new LexicalAnalyzer (filename);
@@ -370,6 +371,8 @@ int SyntacticalAnalyzer::stmt_list(string pass)
     { // here's where all the operators go that arent - or /
         printP2FileUsing("5");
         errors += stmt("");
+
+        /* LOGIC FOR HANDLING ARITHMETIC */
         if (pass != "") // I have this conditional to prevent wierd spacing
             WriteCodeWrapper(0, " " + pass + " ", STMT_LIST_F, "Writing from pass !=");
         else if (token == NUMLIT_T && action_executed && pass == "")
@@ -379,6 +382,18 @@ int SyntacticalAnalyzer::stmt_list(string pass)
             action_executed = false;
             action_exec_on_type = "";
         }
+        /* ****************************** */
+
+        /* SEPERATING IDENTIFIERS */
+        /* Test case 7 */
+        if (action_executed_IDENT_T && token != RPAREN_T && token != LPAREN_T)
+            WriteCodeWrapper(0, " , ", STMT_LIST_F, "Writing action_executed_IDENT_T: " + lex->GetLexeme());
+        else
+            action_executed_IDENT_T = false;
+        /* ****************************** */
+
+        // if (action_executed_IDENT_T && token == RPAREN_T)
+            // action_executed_IDENT_T = false;
 
         
         errors+= stmt_list("");
@@ -605,6 +620,7 @@ int SyntacticalAnalyzer::action(string pass) {
         case NOT_T:
             printP2FileUsing("30");
             token = lex->GetToken();
+            WriteCodeWrapper(0, "!", ACTION_F);
             errors += stmt("!=");
             break;
 
@@ -651,6 +667,7 @@ int SyntacticalAnalyzer::action(string pass) {
         case PLUS_T:
             action_executed = true;
             action_exec_on_type = lex->GetLexeme();
+            action_executed_IDENT_T = false;
             printP2FileUsing("36");
             token = lex->GetToken();
             errors += stmt_list("+");
@@ -735,12 +752,13 @@ int SyntacticalAnalyzer::action(string pass) {
         case IDENT_T:
             printP2FileUsing("47");
 	        WriteCodeWrapper(0, lex->GetLexeme() + "(", ACTION_F);
+            action_executed_IDENT_T = true;
             token = lex->GetToken();
             errors += stmt_list("");
             if (token != RPAREN_T) {
-            WriteCodeWrapper(0, ", ", ACTION_F);
+                WriteCodeWrapper(0, ", ", ACTION_F);
             }
-	    WriteCodeWrapper(0, ")", ACTION_F);
+	        WriteCodeWrapper(0, ")", ACTION_F);
             break;
 
         case DISPLAY_T:
@@ -1002,8 +1020,8 @@ int SyntacticalAnalyzer::param_list(string pass) {
 
     if (token == IDENT_T) 
     {
-        // if (pass != "")
-        //     WriteCodeWrapper(0, " , ");
+        if (pass != "")
+            WriteCodeWrapper(0, " , ", PARAM_LIST_F);
         WriteCodeWrapper(0,"Object " + lex->GetLexeme() + " ", PARAM_LIST_F);
         printP2FileUsing("16");
         token = lex->GetToken(); 
