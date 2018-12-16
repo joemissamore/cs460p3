@@ -211,8 +211,18 @@ int SyntacticalAnalyzer::stmt(string pass){
     
     if(token==IDENT_T){
         printP2FileUsing("8");
-        codeGen->WriteCode(0, "Object (" + lex->GetLexeme() + ")");
-        token = lex->GetToken();
+	if(!(no_return)) {
+	  codeGen->WriteCode(1, "return ");
+	}
+	if (pass != "") {
+	    codeGen->WriteCode(0, "Object (" + lex->GetLexeme() + ") " + pass + " ");
+	} else {
+	   codeGen->WriteCode(0, "Object (" + lex->GetLexeme() + ")");
+	}
+	if (!(no_return)){
+	  codeGen->WriteCode(0, ";\n");
+	}
+	token = lex->GetToken();
     }
     else if (token == LPAREN_T){
         printP2FileUsing("9");
@@ -223,7 +233,7 @@ int SyntacticalAnalyzer::stmt(string pass){
 	  codeGen->WriteCode(1, "return ");
 	  no_return = true;
 	  on_return = true;
-	} else if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && no_return) {
+	} else if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T || token == LISTOP_T) && no_return) {
 	  codeGen->WriteCode(0, "(");
 	} else {
 	  no_return = true;
@@ -510,15 +520,20 @@ int SyntacticalAnalyzer::action(string pass) {
 
         case LISTOP_T:
             printP2FileUsing("26");
+	    codeGen->WriteCode(0, "listop(\"" + lex->GetLexeme() + "\", ");
             token = lex->GetToken();
             errors += stmt("");
+	    codeGen->WriteCode(0, ")");
             break;
 
         case CONS_T:
             printP2FileUsing("27");
+	    codeGen->WriteCode(0, "cons(");
             token = lex->GetToken();
             errors += stmt("");
+	    codeGen->WriteCode(0, ", ");
             errors += stmt("");
+	    codeGen->WriteCode(0, ")");
             break;
 
         case AND_T:
@@ -541,32 +556,42 @@ int SyntacticalAnalyzer::action(string pass) {
 
         case NUMBERP_T:
             printP2FileUsing("31");
+	    codeGen->WriteCode(0, "numberp(");
             token = lex->GetToken();
             errors += stmt("");
+	    codeGen->WriteCode(0, ")");
             break;
 
         case LISTP_T:
             printP2FileUsing("32");
+	    codeGen->WriteCode(0, "listp(");
             token = lex->GetToken();
             errors += stmt("");
+	    codeGen->WriteCode(0, ")");
             break;
 
         case ZEROP_T:
             printP2FileUsing("33");
+	    codeGen->WriteCode(0, "zerop(");
             token = lex->GetToken();
             errors += stmt("");
+	    codeGen->WriteCode(0, ")");
             break;
 
         case NULLP_T:
             printP2FileUsing("34");
+	    codeGen->WriteCode(0, "nullp(");
             token = lex->GetToken();
             errors += stmt("");
+	    codeGen->WriteCode(0, ")");
             break;
 
         case STRINGP_T:
             printP2FileUsing("35");
+	    codeGen->WriteCode(0, "stringp(");
             token = lex->GetToken();
             errors += stmt("");
+	    codeGen->WriteCode(0, ")");
             break;
 
         case PLUS_T:
@@ -604,8 +629,10 @@ int SyntacticalAnalyzer::action(string pass) {
 
         case ROUND_T:
             printP2FileUsing("41");
+	    codeGen->WriteCode(0, "round(");
             token = lex->GetToken();
             errors += stmt("");
+	    codeGen->WriteCode(0, ")");
             break;
 
         case EQUALTO_T:
