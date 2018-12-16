@@ -10,6 +10,8 @@ using namespace std;
 /* Purpose of these is to map the 
  * functions to the correct column
  * in the syntactical table. */
+
+
 enum functionRuleNumberMapping {
     PROGRAM_F,
     MORE_DEFINES_F,
@@ -115,7 +117,8 @@ class SyntacticalAnalyzer
     void printP2Exiting(const string &funkyName, const string &token);
     bool isValidToken(functionRuleNumberMapping fMap);
     void validateToken(functionRuleNumberMapping fMap);
-        
+    void WriteCodeWrapper(int, string, functionRuleNumberMapping);
+    string GetFunkyName(functionRuleNumberMapping);
     /* Helper functions - CodeGen */
     void GetTokLex();
     void PLUS();
