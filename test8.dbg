@@ -1,5 +1,7 @@
 Input file: test8.ss
-   1: (define (insert_last ls v)
+   1: ;; Project 3 Test 8
+   2: 
+   3: (define (insert_last ls v)
 	LPAREN_T        (
 	DEFINE_T        define
 	LPAREN_T        (
@@ -7,21 +9,21 @@ Input file: test8.ss
 	IDENT_T         ls
 	IDENT_T         v
 	RPAREN_T        )
-   2:         (if (list? ls)
+   4:         (if (list? ls)
 	LPAREN_T        (
 	IF_T            if
 	LPAREN_T        (
 	LISTP_T         list?
 	IDENT_T         ls
 	RPAREN_T        )
-   3:         	(if (null? ls)
+   5:         	(if (null? ls)
 	LPAREN_T        (
 	IF_T            if
 	LPAREN_T        (
 	NULLP_T         null?
 	IDENT_T         ls
 	RPAREN_T        )
-   4:                 	(cons v '())
+   6:                 	(cons v '())
 	LPAREN_T        (
 	CONS_T          cons
 	IDENT_T         v
@@ -29,7 +31,7 @@ Input file: test8.ss
 	LPAREN_T        (
 	RPAREN_T        )
 	RPAREN_T        )
-   5:                 	(cons (car ls) (insert_last (cdr ls) v))
+   7:                 	(cons (car ls) (insert_last (cdr ls) v))
 	LPAREN_T        (
 	CONS_T          cons
 	LPAREN_T        (
@@ -45,42 +47,42 @@ Input file: test8.ss
 	IDENT_T         v
 	RPAREN_T        )
 	RPAREN_T        )
-   6: 		)
+   8: 		)
 	RPAREN_T        )
-   7:         	'first_argument_of_insert_last_must_be_a_list
+   9:         	'first_argument_of_insert_last_must_be_a_list
 	SQUOTE_T        '
 	IDENT_T         first_argument_of_insert_last_must_be_a_list
-   8: 	)
+  10: 	)
 	RPAREN_T        )
-   9: )
+  11: )
 	RPAREN_T        )
-  10: 
-  11: (define (list_reverse ls)
+  12: 
+  13: (define (list_reverse ls)
 	LPAREN_T        (
 	DEFINE_T        define
 	LPAREN_T        (
 	IDENT_T         list_reverse
 	IDENT_T         ls
 	RPAREN_T        )
-  12:         (if (list? ls)
+  14:         (if (list? ls)
 	LPAREN_T        (
 	IF_T            if
 	LPAREN_T        (
 	LISTP_T         list?
 	IDENT_T         ls
 	RPAREN_T        )
-  13:             	(if (null? ls)
+  15:             	(if (null? ls)
 	LPAREN_T        (
 	IF_T            if
 	LPAREN_T        (
 	NULLP_T         null?
 	IDENT_T         ls
 	RPAREN_T        )
-  14:                 	'()
+  16:                 	'()
 	SQUOTE_T        '
 	LPAREN_T        (
 	RPAREN_T        )
-  15:                 	(insert_last (list_reverse (cdr ls)) (car ls))
+  17:                 	(insert_last (list_reverse (cdr ls)) (car ls))
 	LPAREN_T        (
 	IDENT_T         insert_last
 	LPAREN_T        (
@@ -95,22 +97,22 @@ Input file: test8.ss
 	IDENT_T         ls
 	RPAREN_T        )
 	RPAREN_T        )
-  16: 		)
+  18: 		)
 	RPAREN_T        )
-  17:             	'list_reverse_requires_a_list_argument)
+  19:             	'list_reverse_requires_a_list_argument)
 	SQUOTE_T        '
 	IDENT_T         list_reverse_requires_a_list_argument
 	RPAREN_T        )
-  18: )
+  20: )
 	RPAREN_T        )
-  19: 
-  20: (define (main)
+  21: 
+  22: (define (main)
 	LPAREN_T        (
 	DEFINE_T        define
 	LPAREN_T        (
 	IDENT_T         main
 	RPAREN_T        )
-  21: 	(display (list_reverse '(indentifier numeric literal cons if display newline
+  23: 	(display (list_reverse '(indentifier numeric literal cons if display newline
 	LPAREN_T        (
 	DISPLAY_T       display
 	LPAREN_T        (
@@ -124,7 +126,7 @@ Input file: test8.ss
 	IF_T            if
 	DISPLAY_T       display
 	NEWLINE_T       newline
-  22:         			 cddr and or not define number? symbol list? zero?
+  24:         			 cddr and or not define number? symbol list? zero?
 	LISTOP_T        cddr
 	AND_T           and
 	OR_T            or
@@ -134,7 +136,7 @@ Input file: test8.ss
 	IDENT_T         symbol
 	LISTP_T         list?
 	ZEROP_T         zero?
-  23: 				 null? modulo string? + - / * = > < >= <= 'anything
+  25: 				 null? modulo string? + - / * = > < >= <= 'anything
 	NULLP_T         null?
 	MODULO_T        modulo
 	STRINGP_T       string?
@@ -149,18 +151,18 @@ Input file: test8.ss
 	LTE_T           <=
 	SQUOTE_T        '
 	IDENT_T         anything
-  24: 				 1 1.01 "HelloWorld")))
+  26: 				 1 1.01 "HelloWorld")))
 	NUMLIT_T        1
 	NUMLIT_T        1.01
 	STRLIT_T        "HelloWorld"
 	RPAREN_T        )
 	RPAREN_T        )
 	RPAREN_T        )
-  25: 	(newline)
+  27: 	(newline)
 	LPAREN_T        (
 	NEWLINE_T       newline
 	RPAREN_T        )
-  26: 	(display (cons 'a 'b)) (newline)
+  28: 	(display (cons 'a 'b)) (newline)
 	LPAREN_T        (
 	DISPLAY_T       display
 	LPAREN_T        (
@@ -174,11 +176,10 @@ Input file: test8.ss
 	LPAREN_T        (
 	NEWLINE_T       newline
 	RPAREN_T        )
-  27: )
-	RPAREN_T        )
-  28: (main)
-	LPAREN_T        (
-	IDENT_T         main
+  29: )
 	RPAREN_T        )
 	EOF_T           
-0 errors found in input file
+Error at 29,2: 'LPAREN_T' expected 
+Error at 29,2: '' unexpected 
+Error at 29,2: '' unexpected 
+3 errors found in input file

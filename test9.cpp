@@ -6,15 +6,20 @@ using namespace std;
 
 Object cond_ex_1 (Object choice  , Object value )
 {
-(Object (choice) == Object (1))	return Object (value);
-(Object (choice) == Object (2))	return Object (value) * Object (value);
-(Object (choice) == Object (3))	if (Object (value) == Object (0)){
+	if (Object (choice) == Object (1)){
+	return Object (value);
+	} else if (Object (choice) == Object (2)){
+	return Object (value) * Object (value);
+	} else if (Object (choice) == Object (3)){
+	if (Object (value) == Object (0)){
 	return Object ("Division by 0 not defined");
 	} else {
 	return Object (1) / Object (value);
 }
 ;
+	} else {
 	return Object (0);
+	}
 ;
 	return Object();
 }
@@ -40,10 +45,15 @@ Object reciprocal (Object n )
 }
 Object cond_ex_2 (Object choice  , Object value )
 {
-(Object (choice) == Object (1))	return Object (value);
-(Object (choice) == Object (2))	return square(Object (value));
-(Object (choice) == Object (3))	return reciprocal(Object (value));
+	if (Object (choice) == Object (1)){
+	return Object (value);
+	} else if (Object (choice) == Object (2)){
+	return square(Object (value));
+	} else if (Object (choice) == Object (3)){
+	return reciprocal(Object (value));
+	} else {
 	return Object (0);
+	}
 ;
 	return Object();
 }

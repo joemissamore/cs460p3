@@ -148,7 +148,4 @@
 	NEWLINE_T       newline
 	RPAREN_T        )
 	RPAREN_T        )
-	LPAREN_T        (
-	IDENT_T         main
-	RPAREN_T        )
 	EOF_T           

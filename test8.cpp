@@ -36,7 +36,7 @@ Object list_reverse (Object ls )
 }
 int main()
 {
-	cout << (list_reverse(Object ("(indentifier numeric literal cons if display newline cddr and or not define number? symbol list? zero? null? modulo string? + - / * = > < >= <= 'anything 1 1.01 \"\"\"\"\"\"\"\"\"\")")));
+	cout << (list_reverse(Object ("(indentifier numeric literal cons if display newline cddr and or not define number? symbol list? zero? null? modulo string? + - / * = > < >= <= 'anything 1 1.01 \"HelloWorld\")")));
 	cout << endl;
 	cout << (cons(Object ("a"), Object ("b")));
 	cout << endl;

@@ -546,12 +546,8 @@ Exiting Stmt_List function; current token is: RPAREN_T
 Exiting Stmt_List function; current token is: RPAREN_T
 Exiting Stmt_List function; current token is: RPAREN_T
 Exiting Stmt_List function; current token is: RPAREN_T
-Exiting Define function; current token is: LPAREN_T
-Entering More_Defines function; current token is: IDENT_T, lexeme: main
-Using Rule 3
-Entering Stmt_List function; current token is: RPAREN_T, lexeme: )
-Using Rule 6
-Exiting Stmt_List function; current token is: RPAREN_T
+Exiting Define function; current token is: EOF_T
+Entering More_Defines function; current token is: EOF_T, lexeme: 
 Exiting More_Defines function; current token is: EOF_T
 Exiting More_Defines function; current token is: EOF_T
 Exiting More_Defines function; current token is: EOF_T

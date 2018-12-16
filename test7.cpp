@@ -26,13 +26,13 @@ Object iftest (Object a  , Object b  , Object c )
 }
 int main()
 {
-	cout << (iftest(Object (10) , Object (15) , Object (20)));
+	cout << (iftest(Object (10) ,  Object (15)Object (20)));
 	cout << endl;
-	cout << (iftest(Object (10) , Object (10) , Object (10)));
+	cout << (iftest(Object (10) ,  Object (10)Object (10)));
 	cout << endl;
-	cout << (iftest(Object (20) , Object (15) , Object (10)));
+	cout << (iftest(Object (20) ,  Object (15)Object (10)));
 	cout << endl;
-	cout << (iftest(Object (15) , Object (10) , Object (20)));
+	cout << (iftest(Object (15) ,  Object (10)Object (20)));
 	cout << endl;
 	return 0;
 }

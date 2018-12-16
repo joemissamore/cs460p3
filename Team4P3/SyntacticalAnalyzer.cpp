@@ -321,44 +321,48 @@ int SyntacticalAnalyzer::stmt(string pass){
 }
 
 int SyntacticalAnalyzer::stmt_pair_body(string pass){
-    int errors = 0;
+     int errors = 0;
     printP2File("Stmt_Pair_Body", lex->GetTokenName(token), lex->GetLexeme());
     validateToken(STMT_PAIR_BODY_F);
+
+    cout << "stmt_pair_body() :: Pass: " << pass << endl;
 
     if(token == ELSE_T)
     {
         printP2FileUsing("23");
-        token = lex->GetToken();  
+        token = lex->GetToken();
         no_return = false;
-
+        WriteCodeWrapper(1, "} else {\n", STMT_PAIR_BODY_F);
         errors+=stmt("");
-        
-        if(token==RPAREN_T)
+        if(token==RPAREN_T) {
             token = lex->GetToken();
-        else 
+            WriteCodeWrapper(1, "}\n", STMT_PAIR_BODY_F);
+        }
+        else
         {
             writeLstExpected(RPAREN_T);
             errors++;
         }
     }
 
-    else 
+    else
     {
         printP2FileUsing("22");
         errors+=stmt("");
-	    no_return = false; // set to true in stmt, rule 9, the next line is then-body
+        WriteCodeWrapper(0, "{\n", STMT_PAIR_BODY_F);
+        no_return = false; // set to true in stmt, rule 9, the next line is then-body
         errors+=stmt("");
         if(token==RPAREN_T)
             token = lex->GetToken();
-        else 
+        else
         {
             errors++;
             writeLstExpected(RPAREN_T);
         }
-	no_return = true;
+        no_return = true;
         errors+=stmt_pair("");
     }
-    
+
     printP2Exiting("Stmt_Pair_Body", lex->GetTokenName(token));
     return errors;
 }
@@ -375,7 +379,7 @@ int SyntacticalAnalyzer::stmt_list(string pass)
         errors += stmt("");
 
         /* LOGIC FOR HANDLING ARITHMETIC */
-        if (pass != "") // I have this conditional to prevent wierd spacing
+        if (pass != "" && token != RPAREN_T) // I have this conditional to prevent wierd spacing
             WriteCodeWrapper(0, " " + pass + " ", STMT_LIST_F, "Writing from pass !=");
         else if (token == NUMLIT_T && action_executed && pass == "")
             WriteCodeWrapper(0, " " + action_exec_on_type + " ", STMT_LIST_F, "Writing from 2nd conditional");
@@ -386,10 +390,10 @@ int SyntacticalAnalyzer::stmt_list(string pass)
         }
         /* ****************************** */
 
-        /* SEPERATING IDENTIFIERS */
-        /* Test case 7 */
-        if (action_executed_IDENT_T && token != RPAREN_T && token != LPAREN_T)
-            WriteCodeWrapper(0, " , ", STMT_LIST_F, "Writing action_executed_IDENT_T: " + lex->GetLexeme());
+        /* SEPERATING IDENTIFIERS /
+        / Test case 7 */
+        if (action_executed_IDENT_T && token != RPAREN_T && token != LPAREN_T){}
+          //            WriteCodeWrapper(0, " , ", STMT_LIST_F, "Writing action_executed_IDENT_T: " + lex->GetLexeme());
         else
             action_executed_IDENT_T = false;
         /* ****************************** */
@@ -587,14 +591,15 @@ int SyntacticalAnalyzer::action(string pass) {
             errors += else_part("");
             break;
 
-        case COND_T:
+       case COND_T:
             printP2FileUsing("25");
             token = lex->GetToken();
-            
-            if (token == LPAREN_T) 
-                token = lex->GetToken();
 
-            else 
+            if (token == LPAREN_T) {
+                token = lex->GetToken();
+                WriteCodeWrapper(1, "if ", ACTION_F);
+            }
+            else
             {
                 errors++;
                 writeLstExpected(LPAREN_T);
@@ -767,14 +772,16 @@ int SyntacticalAnalyzer::action(string pass) {
 
         case IDENT_T:
             printP2FileUsing("47");
-	        WriteCodeWrapper(0, lex->GetLexeme() + "(", ACTION_F);
+            WriteCodeWrapper(0, lex->GetLexeme() + "(", ACTION_F);
             action_executed_IDENT_T = true;
             token = lex->GetToken();
-            errors += stmt_list("");
+            errors += stmt_list(", ");
+            /*
             if (token != RPAREN_T) {
                 WriteCodeWrapper(0, ", ", ACTION_F);
             }
-	        WriteCodeWrapper(0, ")", ACTION_F);
+            */
+                WriteCodeWrapper(0, ")", ACTION_F);
             break;
 
         case DISPLAY_T:
@@ -824,12 +831,13 @@ int SyntacticalAnalyzer::any_other_token(string pass, bool prevCalled) {
         string _write = "";
         for (int i = 0; i < _lex.size(); i++)
         {
-            if (_lex[i] != '\"')
+            if (_lex[i] == '\"')
             {
                 _write += "\\";
                 _write += "\"";
             }
-                
+            else
+                _write += _lex[i];
 
         }
         WriteCodeWrapper(0, _write, ANY_OTHER_TOKEN_F);
@@ -1030,6 +1038,9 @@ int SyntacticalAnalyzer::stmt_pair(string pass) {
     if (token == LPAREN_T) {
         printP2FileUsing("20");
         token = lex->GetToken();
+        if (token != ELSE_T) {
+          WriteCodeWrapper(1, "} else if ", STMT_PAIR_F);
+        }
         errors += stmt_pair_body("");
     }
 

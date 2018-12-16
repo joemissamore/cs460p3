@@ -1,5 +1,7 @@
 Input file: test9.ss
-   1: (define (cond_ex_1 choice value)
+   1: ;; Project 3 Test 9
+   2: 
+   3: (define (cond_ex_1 choice value)
 	LPAREN_T        (
 	DEFINE_T        define
 	LPAREN_T        (
@@ -7,7 +9,7 @@ Input file: test9.ss
 	IDENT_T         choice
 	IDENT_T         value
 	RPAREN_T        )
-   2:     (cond ((= choice 1) value)
+   4:     (cond ((= choice 1) value)
 	LPAREN_T        (
 	COND_T          cond
 	LPAREN_T        (
@@ -18,7 +20,7 @@ Input file: test9.ss
 	RPAREN_T        )
 	IDENT_T         value
 	RPAREN_T        )
-   3: 	  ((= choice 2) (* value value))
+   5: 	  ((= choice 2) (* value value))
 	LPAREN_T        (
 	LPAREN_T        (
 	EQUALTO_T       =
@@ -31,7 +33,7 @@ Input file: test9.ss
 	IDENT_T         value
 	RPAREN_T        )
 	RPAREN_T        )
-   4: 	  ((= choice 3) (if (= value 0)
+   6: 	  ((= choice 3) (if (= value 0)
 	LPAREN_T        (
 	LPAREN_T        (
 	EQUALTO_T       =
@@ -45,63 +47,63 @@ Input file: test9.ss
 	IDENT_T         value
 	NUMLIT_T        0
 	RPAREN_T        )
-   5: 				"Division by 0 not defined"
+   7: 				"Division by 0 not defined"
 	STRLIT_T        "Division by 0 not defined"
-   6: 				(/ 1 value)
+   8: 				(/ 1 value)
 	LPAREN_T        (
 	DIV_T           /
 	NUMLIT_T        1
 	IDENT_T         value
 	RPAREN_T        )
-   7: 			))
+   9: 			))
 	RPAREN_T        )
 	RPAREN_T        )
-   8: 	  (else 0)
+  10: 	  (else 0)
 	LPAREN_T        (
 	ELSE_T          else
 	NUMLIT_T        0
 	RPAREN_T        )
-   9:     )
+  11:     )
 	RPAREN_T        )
-  10: )
+  12: )
 	RPAREN_T        )
-  11: 
-  12: (define (square n)
+  13: 
+  14: (define (square n)
 	LPAREN_T        (
 	DEFINE_T        define
 	LPAREN_T        (
 	IDENT_T         square
 	IDENT_T         n
 	RPAREN_T        )
-  13:         (if (number? n)
+  15:         (if (number? n)
 	LPAREN_T        (
 	IF_T            if
 	LPAREN_T        (
 	NUMBERP_T       number?
 	IDENT_T         n
 	RPAREN_T        )
-  14: 		(* n n)
+  16: 		(* n n)
 	LPAREN_T        (
 	MULT_T          *
 	IDENT_T         n
 	IDENT_T         n
 	RPAREN_T        )
-  15:                 'invalid_parameter
+  17:                 'invalid_parameter
 	SQUOTE_T        '
 	IDENT_T         invalid_parameter
-  16:         )
+  18:         )
 	RPAREN_T        )
-  17: )
+  19: )
 	RPAREN_T        )
-  18: 
-  19: (define (reciprocal n)
+  20: 
+  21: (define (reciprocal n)
 	LPAREN_T        (
 	DEFINE_T        define
 	LPAREN_T        (
 	IDENT_T         reciprocal
 	IDENT_T         n
 	RPAREN_T        )
-  20:         (if (and (number? n) (not (= n 0)))
+  22:         (if (and (number? n) (not (= n 0)))
 	LPAREN_T        (
 	IF_T            if
 	LPAREN_T        (
@@ -119,21 +121,21 @@ Input file: test9.ss
 	RPAREN_T        )
 	RPAREN_T        )
 	RPAREN_T        )
-  21:                 (/ 1 n)
+  23:                 (/ 1 n)
 	LPAREN_T        (
 	DIV_T           /
 	NUMLIT_T        1
 	IDENT_T         n
 	RPAREN_T        )
-  22:                 'invalid_parameter
+  24:                 'invalid_parameter
 	SQUOTE_T        '
 	IDENT_T         invalid_parameter
-  23:         )
+  25:         )
 	RPAREN_T        )
-  24: )
+  26: )
 	RPAREN_T        )
-  25: 
-  26: (define (cond_ex_2 choice value)
+  27: 
+  28: (define (cond_ex_2 choice value)
 	LPAREN_T        (
 	DEFINE_T        define
 	LPAREN_T        (
@@ -141,7 +143,7 @@ Input file: test9.ss
 	IDENT_T         choice
 	IDENT_T         value
 	RPAREN_T        )
-  27:     (cond ((= choice 1) value)
+  29:     (cond ((= choice 1) value)
 	LPAREN_T        (
 	COND_T          cond
 	LPAREN_T        (
@@ -152,7 +154,7 @@ Input file: test9.ss
 	RPAREN_T        )
 	IDENT_T         value
 	RPAREN_T        )
-  28: 	  ((= choice 2) (square value))
+  30: 	  ((= choice 2) (square value))
 	LPAREN_T        (
 	LPAREN_T        (
 	EQUALTO_T       =
@@ -164,7 +166,7 @@ Input file: test9.ss
 	IDENT_T         value
 	RPAREN_T        )
 	RPAREN_T        )
-  29: 	  ((= choice 3) (reciprocal value))
+  31: 	  ((= choice 3) (reciprocal value))
 	LPAREN_T        (
 	LPAREN_T        (
 	EQUALTO_T       =
@@ -176,23 +178,23 @@ Input file: test9.ss
 	IDENT_T         value
 	RPAREN_T        )
 	RPAREN_T        )
-  30: 	  (else 0)
+  32: 	  (else 0)
 	LPAREN_T        (
 	ELSE_T          else
 	NUMLIT_T        0
 	RPAREN_T        )
-  31:     )
+  33:     )
 	RPAREN_T        )
-  32: )
+  34: )
 	RPAREN_T        )
-  33: 
-  34: (define (main)
+  35: 
+  36: (define (main)
 	LPAREN_T        (
 	DEFINE_T        define
 	LPAREN_T        (
 	IDENT_T         main
 	RPAREN_T        )
-  35: 	(display (cond_ex_1 1 5.0)) (newline)
+  37: 	(display (cond_ex_1 1 5.0)) (newline)
 	LPAREN_T        (
 	DISPLAY_T       display
 	LPAREN_T        (
@@ -204,7 +206,7 @@ Input file: test9.ss
 	LPAREN_T        (
 	NEWLINE_T       newline
 	RPAREN_T        )
-  36: 	(display (cond_ex_1 1 -7.0)) (newline)
+  38: 	(display (cond_ex_1 1 -7.0)) (newline)
 	LPAREN_T        (
 	DISPLAY_T       display
 	LPAREN_T        (
@@ -216,7 +218,7 @@ Input file: test9.ss
 	LPAREN_T        (
 	NEWLINE_T       newline
 	RPAREN_T        )
-  37: 	(display (cond_ex_1 2 5.0)) (newline)
+  39: 	(display (cond_ex_1 2 5.0)) (newline)
 	LPAREN_T        (
 	DISPLAY_T       display
 	LPAREN_T        (
@@ -228,7 +230,7 @@ Input file: test9.ss
 	LPAREN_T        (
 	NEWLINE_T       newline
 	RPAREN_T        )
-  38: 	(display (cond_ex_1 2 -7.0)) (newline)
+  40: 	(display (cond_ex_1 2 -7.0)) (newline)
 	LPAREN_T        (
 	DISPLAY_T       display
 	LPAREN_T        (
@@ -240,7 +242,7 @@ Input file: test9.ss
 	LPAREN_T        (
 	NEWLINE_T       newline
 	RPAREN_T        )
-  39: 	(display (cond_ex_1 3 5.0)) (newline)
+  41: 	(display (cond_ex_1 3 5.0)) (newline)
 	LPAREN_T        (
 	DISPLAY_T       display
 	LPAREN_T        (
@@ -252,7 +254,7 @@ Input file: test9.ss
 	LPAREN_T        (
 	NEWLINE_T       newline
 	RPAREN_T        )
-  40: 	(display (cond_ex_1 3 -7.0)) (newline)
+  42: 	(display (cond_ex_1 3 -7.0)) (newline)
 	LPAREN_T        (
 	DISPLAY_T       display
 	LPAREN_T        (
@@ -264,7 +266,7 @@ Input file: test9.ss
 	LPAREN_T        (
 	NEWLINE_T       newline
 	RPAREN_T        )
-  41: 	(display (cond_ex_1 3 0)) (newline)
+  43: 	(display (cond_ex_1 3 0)) (newline)
 	LPAREN_T        (
 	DISPLAY_T       display
 	LPAREN_T        (
@@ -276,7 +278,7 @@ Input file: test9.ss
 	LPAREN_T        (
 	NEWLINE_T       newline
 	RPAREN_T        )
-  42: 	(display (cond_ex_1 -1 5.0)) (newline)
+  44: 	(display (cond_ex_1 -1 5.0)) (newline)
 	LPAREN_T        (
 	DISPLAY_T       display
 	LPAREN_T        (
@@ -288,7 +290,7 @@ Input file: test9.ss
 	LPAREN_T        (
 	NEWLINE_T       newline
 	RPAREN_T        )
-  43: 	(display (cond_ex_2 1 5.0)) (newline)
+  45: 	(display (cond_ex_2 1 5.0)) (newline)
 	LPAREN_T        (
 	DISPLAY_T       display
 	LPAREN_T        (
@@ -300,7 +302,7 @@ Input file: test9.ss
 	LPAREN_T        (
 	NEWLINE_T       newline
 	RPAREN_T        )
-  44: 	(display (cond_ex_2 1 -7.0)) (newline)
+  46: 	(display (cond_ex_2 1 -7.0)) (newline)
 	LPAREN_T        (
 	DISPLAY_T       display
 	LPAREN_T        (
@@ -312,7 +314,7 @@ Input file: test9.ss
 	LPAREN_T        (
 	NEWLINE_T       newline
 	RPAREN_T        )
-  45: 	(display (cond_ex_2 2 5.0)) (newline)
+  47: 	(display (cond_ex_2 2 5.0)) (newline)
 	LPAREN_T        (
 	DISPLAY_T       display
 	LPAREN_T        (
@@ -324,7 +326,7 @@ Input file: test9.ss
 	LPAREN_T        (
 	NEWLINE_T       newline
 	RPAREN_T        )
-  46: 	(display (cond_ex_2 2 -7.0)) (newline)
+  48: 	(display (cond_ex_2 2 -7.0)) (newline)
 	LPAREN_T        (
 	DISPLAY_T       display
 	LPAREN_T        (
@@ -336,7 +338,7 @@ Input file: test9.ss
 	LPAREN_T        (
 	NEWLINE_T       newline
 	RPAREN_T        )
-  47: 	(display (cond_ex_2 3 5.0)) (newline)
+  49: 	(display (cond_ex_2 3 5.0)) (newline)
 	LPAREN_T        (
 	DISPLAY_T       display
 	LPAREN_T        (
@@ -348,7 +350,7 @@ Input file: test9.ss
 	LPAREN_T        (
 	NEWLINE_T       newline
 	RPAREN_T        )
-  48: 	(display (cond_ex_2 3 -7.0)) (newline)
+  50: 	(display (cond_ex_2 3 -7.0)) (newline)
 	LPAREN_T        (
 	DISPLAY_T       display
 	LPAREN_T        (
@@ -360,7 +362,7 @@ Input file: test9.ss
 	LPAREN_T        (
 	NEWLINE_T       newline
 	RPAREN_T        )
-  49: 	(display (cond_ex_2 3 0)) (newline)
+  51: 	(display (cond_ex_2 3 0)) (newline)
 	LPAREN_T        (
 	DISPLAY_T       display
 	LPAREN_T        (
@@ -372,7 +374,7 @@ Input file: test9.ss
 	LPAREN_T        (
 	NEWLINE_T       newline
 	RPAREN_T        )
-  50: 	(display (cond_ex_2 -1 5.0)) (newline)
+  52: 	(display (cond_ex_2 -1 5.0)) (newline)
 	LPAREN_T        (
 	DISPLAY_T       display
 	LPAREN_T        (
@@ -384,10 +386,10 @@ Input file: test9.ss
 	LPAREN_T        (
 	NEWLINE_T       newline
 	RPAREN_T        )
-  51: )
+  53: )
 	RPAREN_T        )
-  52: 
-  53: (main)
+  54: 
+  55: (main)
 	LPAREN_T        (
 	IDENT_T         main
 	RPAREN_T        )
