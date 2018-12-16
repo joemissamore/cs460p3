@@ -416,7 +416,7 @@ int SyntacticalAnalyzer::stmt_list(string pass)
         
 
         
-        errors+= stmt_list("");
+        errors+= stmt_list(pass);
     }
 
     else if (token == RPAREN_T)
