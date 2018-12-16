@@ -215,7 +215,7 @@ int SyntacticalAnalyzer::stmt(string pass){
 	  codeGen->WriteCode(1, "return ");
 	}
 	if (pass != "") {
-	    codeGen->WriteCode(0, "Object (" + lex->GetLexeme() + ") " + pass + " ");
+	    codeGen->WriteCode(0, "Object (" + lex->GetLexeme() + ")");
 	} else {
 	   codeGen->WriteCode(0, "Object (" + lex->GetLexeme() + ")");
 	}
@@ -332,7 +332,9 @@ int SyntacticalAnalyzer::stmt_list(string pass)
     if (token == LPAREN_T || token == IDENT_T || token == NUMLIT_T || token == STRLIT_T || token == SQUOTE_T)
     {
         printP2FileUsing("5");
-        errors += stmt(pass);
+        errors += stmt("");
+	if (pass != "")
+	  codeGen->WriteCode(0, " " + pass + " ");
         errors+= stmt_list("");
     }
 
@@ -611,14 +613,16 @@ int SyntacticalAnalyzer::action(string pass) {
         case MINUS_T:
             printP2FileUsing("37");
             token = lex->GetToken();
-            errors += stmt("-");
-            errors += stmt_list("-");
+            errors += stmt("");
+	    codeGen->WriteCode(0, " - ");
+            errors += stmt_list("");
 	    break;
 
         case DIV_T:
 	    printP2FileUsing("38");
             token = lex->GetToken();
-            errors += stmt("/");
+            errors += stmt("");
+	    codeGen->WriteCode(0, " / ");
             errors += stmt_list("");
 	    break;
 
@@ -632,7 +636,8 @@ int SyntacticalAnalyzer::action(string pass) {
             printP2FileUsing("40");
             token = lex->GetToken();
             errors += stmt("");
-            errors += stmt("%");
+	    codeGen->WriteCode(0, " % ");
+            errors += stmt("");
             break;
 
         case ROUND_T:
