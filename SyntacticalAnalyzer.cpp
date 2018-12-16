@@ -227,22 +227,30 @@ int SyntacticalAnalyzer::stmt(string pass){
     else if (token == LPAREN_T){
         printP2FileUsing("9");
         token = lex->GetToken();
-	
+	bool on_return = false;
+	bool no_close = false;
 	if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T) && !(no_return)) 
 	  {
 	  codeGen->WriteCode(1, "return ");
 	  no_return = true;
 	  on_return = true;
-	} else if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T || token == LISTOP_T) && no_return) {
-	  codeGen->WriteCode(0, "(");
+	  no_close = true;
 	} else {
+	  if (!(token == IF_T || token == COND_T || token == DISPLAY_T || token == NEWLINE_T)){
+	    codeGen->WriteCode(0, "(");
+	  } else {
+	    no_close = true;
+	  }
 	  no_return = true;
 	}
         errors+= action("");
         if(token == RPAREN_T){
 	  if (!(no_return) || on_return) {
 	    codeGen->WriteCode(0, ";\n");
+	    no_return = false;
 	  }
+	  if (!(no_close) && !(on_return))
+	    codeGen->WriteCode(0, ")");
 	  token = lex->GetToken();
         }
         else{
@@ -460,7 +468,7 @@ int SyntacticalAnalyzer::define(string pass){
         if (token == RPAREN_T)
 	{
 	  if (not_main)
-	    codeGen->WriteCode(0, "}\n");
+	    codeGen->WriteCode(0, "\n}\n");
 	  token = lex->GetToken();
 	}
 	else
@@ -997,9 +1005,6 @@ int SyntacticalAnalyzer::quoted_lit(string pass)
 
     else
     {
-        if (token == LPAREN_T)
-            codeGen->WriteCode(0, "Object (");
-
         printP2FileUsing("13");
 	codeGen->WriteCode(0, "Object (\"");
         errors += any_other_token("");
