@@ -1,0 +1,34 @@
+Input file: test6.ss
+   1: ;; Project 3 Test 6
+   2: ;; Predicates and If statements
+   3: 
+   4: (define (predicates x)
+   5:   (if (string? x) 
+   6:       "Is a string"
+   7:       (if (null? x)
+   8: 	  "Is null"
+   9: 	  (if (list? x)
+  10: 	      "Is a list"
+  11: 	      (if (zero? x)
+  12: 		  "Is zero"
+  13: 		  (if (number? x)
+  14: 		      "Is a number"
+  15: 		      "Is a USO"
+  16: 		  )
+  17: 	      )
+  18: 	  )
+  19:       )
+  20:   )
+  21: )
+  22: 
+  23: (define (main)
+  24:   (display (predicates 0)) (newline)
+  25:   (display (predicates (+ 5 6))) (newline)
+  26:   (display (predicates '(a b c))) (newline)
+  27:   (display (predicates '())) (newline)
+  28:   (display (predicates "hello world")) (newline)
+  29: )
+Error at 29,2: 'LPAREN_T' expected 
+Error at 29,2: '' unexpected 
+Error at 29,2: '' unexpected 
+3 errors found in input file

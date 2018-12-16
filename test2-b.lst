@@ -1,0 +1,6 @@
+Input file: test2-b.ss
+   1: (define (main)
+   2: 	(display (+ (* 1.2 1) 1))
+   3: )
+   4: (main)
+0 errors found in input file

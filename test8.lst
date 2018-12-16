@@ -1,0 +1,30 @@
+Input file: test8.ss
+   1: (define (insert_last ls v)
+   2:         (if (list? ls)
+   3:         	(if (null? ls)
+   4:                 	(cons v '())
+   5:                 	(cons (car ls) (insert_last (cdr ls) v))
+   6: 		)
+   7:         	'first_argument_of_insert_last_must_be_a_list
+   8: 	)
+   9: )
+  10: 
+  11: (define (list_reverse ls)
+  12:         (if (list? ls)
+  13:             	(if (null? ls)
+  14:                 	'()
+  15:                 	(insert_last (list_reverse (cdr ls)) (car ls))
+  16: 		)
+  17:             	'list_reverse_requires_a_list_argument)
+  18: )
+  19: 
+  20: (define (main)
+  21: 	(display (list_reverse '(indentifier numeric literal cons if display newline
+  22:         			 cddr and or not define number? symbol list? zero?
+  23: 				 null? modulo string? + - / * = > < >= <= 'anything
+  24: 				 1 1.01 "HelloWorld")))
+  25: 	(newline)
+  26: 	(display (cons 'a 'b)) (newline)
+  27: )
+  28: (main)
+0 errors found in input file

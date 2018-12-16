@@ -1,0 +1,150 @@
+Input file: test6.ss
+   1: ;; Project 3 Test 6
+   2: ;; Predicates and If statements
+   3: 
+   4: (define (predicates x)
+	LPAREN_T        (
+	DEFINE_T        define
+	LPAREN_T        (
+	IDENT_T         predicates
+	IDENT_T         x
+	RPAREN_T        )
+   5:   (if (string? x) 
+	LPAREN_T        (
+	IF_T            if
+	LPAREN_T        (
+	STRINGP_T       string?
+	IDENT_T         x
+	RPAREN_T        )
+   6:       "Is a string"
+	STRLIT_T        "Is a string"
+   7:       (if (null? x)
+	LPAREN_T        (
+	IF_T            if
+	LPAREN_T        (
+	NULLP_T         null?
+	IDENT_T         x
+	RPAREN_T        )
+   8: 	  "Is null"
+	STRLIT_T        "Is null"
+   9: 	  (if (list? x)
+	LPAREN_T        (
+	IF_T            if
+	LPAREN_T        (
+	LISTP_T         list?
+	IDENT_T         x
+	RPAREN_T        )
+  10: 	      "Is a list"
+	STRLIT_T        "Is a list"
+  11: 	      (if (zero? x)
+	LPAREN_T        (
+	IF_T            if
+	LPAREN_T        (
+	ZEROP_T         zero?
+	IDENT_T         x
+	RPAREN_T        )
+  12: 		  "Is zero"
+	STRLIT_T        "Is zero"
+  13: 		  (if (number? x)
+	LPAREN_T        (
+	IF_T            if
+	LPAREN_T        (
+	NUMBERP_T       number?
+	IDENT_T         x
+	RPAREN_T        )
+  14: 		      "Is a number"
+	STRLIT_T        "Is a number"
+  15: 		      "Is a USO"
+	STRLIT_T        "Is a USO"
+  16: 		  )
+	RPAREN_T        )
+  17: 	      )
+	RPAREN_T        )
+  18: 	  )
+	RPAREN_T        )
+  19:       )
+	RPAREN_T        )
+  20:   )
+	RPAREN_T        )
+  21: )
+	RPAREN_T        )
+  22: 
+  23: (define (main)
+	LPAREN_T        (
+	DEFINE_T        define
+	LPAREN_T        (
+	IDENT_T         main
+	RPAREN_T        )
+  24:   (display (predicates 0)) (newline)
+	LPAREN_T        (
+	DISPLAY_T       display
+	LPAREN_T        (
+	IDENT_T         predicates
+	NUMLIT_T        0
+	RPAREN_T        )
+	RPAREN_T        )
+	LPAREN_T        (
+	NEWLINE_T       newline
+	RPAREN_T        )
+  25:   (display (predicates (+ 5 6))) (newline)
+	LPAREN_T        (
+	DISPLAY_T       display
+	LPAREN_T        (
+	IDENT_T         predicates
+	LPAREN_T        (
+	PLUS_T          +
+	NUMLIT_T        5
+	NUMLIT_T        6
+	RPAREN_T        )
+	RPAREN_T        )
+	RPAREN_T        )
+	LPAREN_T        (
+	NEWLINE_T       newline
+	RPAREN_T        )
+  26:   (display (predicates '(a b c))) (newline)
+	LPAREN_T        (
+	DISPLAY_T       display
+	LPAREN_T        (
+	IDENT_T         predicates
+	SQUOTE_T        '
+	LPAREN_T        (
+	IDENT_T         a
+	IDENT_T         b
+	IDENT_T         c
+	RPAREN_T        )
+	RPAREN_T        )
+	RPAREN_T        )
+	LPAREN_T        (
+	NEWLINE_T       newline
+	RPAREN_T        )
+  27:   (display (predicates '())) (newline)
+	LPAREN_T        (
+	DISPLAY_T       display
+	LPAREN_T        (
+	IDENT_T         predicates
+	SQUOTE_T        '
+	LPAREN_T        (
+	RPAREN_T        )
+	RPAREN_T        )
+	RPAREN_T        )
+	LPAREN_T        (
+	NEWLINE_T       newline
+	RPAREN_T        )
+  28:   (display (predicates "hello world")) (newline)
+	LPAREN_T        (
+	DISPLAY_T       display
+	LPAREN_T        (
+	IDENT_T         predicates
+	STRLIT_T        "hello world"
+	RPAREN_T        )
+	RPAREN_T        )
+	LPAREN_T        (
+	NEWLINE_T       newline
+	RPAREN_T        )
+  29: )
+	RPAREN_T        )
+	EOF_T           
+Error at 29,2: 'LPAREN_T' expected 
+Error at 29,2: '' unexpected 
+Error at 29,2: '' unexpected 
+3 errors found in input file

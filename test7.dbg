@@ -1,0 +1,147 @@
+Input file: test7.ss
+   1: ;; Project 3 Test 7
+   2: ;; More If statements
+   3: 
+   4: (define (iftest a b c)
+	LPAREN_T        (
+	DEFINE_T        define
+	LPAREN_T        (
+	IDENT_T         iftest
+	IDENT_T         a
+	IDENT_T         b
+	IDENT_T         c
+	RPAREN_T        )
+   5: 	(if (and (= a b) (= b c))
+	LPAREN_T        (
+	IF_T            if
+	LPAREN_T        (
+	AND_T           and
+	LPAREN_T        (
+	EQUALTO_T       =
+	IDENT_T         a
+	IDENT_T         b
+	RPAREN_T        )
+	LPAREN_T        (
+	EQUALTO_T       =
+	IDENT_T         b
+	IDENT_T         c
+	RPAREN_T        )
+	RPAREN_T        )
+   6: 		'all_the_same
+	SQUOTE_T        '
+	IDENT_T         all_the_same
+   7: 		(if (not (or (> a b) (> b c)))
+	LPAREN_T        (
+	IF_T            if
+	LPAREN_T        (
+	NOT_T           not
+	LPAREN_T        (
+	OR_T            or
+	LPAREN_T        (
+	GT_T            >
+	IDENT_T         a
+	IDENT_T         b
+	RPAREN_T        )
+	LPAREN_T        (
+	GT_T            >
+	IDENT_T         b
+	IDENT_T         c
+	RPAREN_T        )
+	RPAREN_T        )
+	RPAREN_T        )
+   8: 			'in_ascending_order
+	SQUOTE_T        '
+	IDENT_T         in_ascending_order
+   9: 			(if (not (< a c))
+	LPAREN_T        (
+	IF_T            if
+	LPAREN_T        (
+	NOT_T           not
+	LPAREN_T        (
+	LT_T            <
+	IDENT_T         a
+	IDENT_T         c
+	RPAREN_T        )
+	RPAREN_T        )
+  10: 				'in_decscending_order
+	SQUOTE_T        '
+	IDENT_T         in_decscending_order
+  11: 				'three_values_passed
+	SQUOTE_T        '
+	IDENT_T         three_values_passed
+  12: 			)
+	RPAREN_T        )
+  13: 		)
+	RPAREN_T        )
+  14: 	)
+	RPAREN_T        )
+  15: )
+	RPAREN_T        )
+  16: 
+  17: (define (main)
+	LPAREN_T        (
+	DEFINE_T        define
+	LPAREN_T        (
+	IDENT_T         main
+	RPAREN_T        )
+  18: 	(display (iftest 10 15 20)) (newline)
+	LPAREN_T        (
+	DISPLAY_T       display
+	LPAREN_T        (
+	IDENT_T         iftest
+	NUMLIT_T        10
+	NUMLIT_T        15
+	NUMLIT_T        20
+	RPAREN_T        )
+	RPAREN_T        )
+	LPAREN_T        (
+	NEWLINE_T       newline
+	RPAREN_T        )
+  19: 	(display (iftest 10 10 10)) (newline)
+	LPAREN_T        (
+	DISPLAY_T       display
+	LPAREN_T        (
+	IDENT_T         iftest
+	NUMLIT_T        10
+	NUMLIT_T        10
+	NUMLIT_T        10
+	RPAREN_T        )
+	RPAREN_T        )
+	LPAREN_T        (
+	NEWLINE_T       newline
+	RPAREN_T        )
+  20: 	(display (iftest 20 15 10)) (newline)
+	LPAREN_T        (
+	DISPLAY_T       display
+	LPAREN_T        (
+	IDENT_T         iftest
+	NUMLIT_T        20
+	NUMLIT_T        15
+	NUMLIT_T        10
+	RPAREN_T        )
+	RPAREN_T        )
+	LPAREN_T        (
+	NEWLINE_T       newline
+	RPAREN_T        )
+  21: 	(display (iftest 15 10 20)) (newline)
+	LPAREN_T        (
+	DISPLAY_T       display
+	LPAREN_T        (
+	IDENT_T         iftest
+	NUMLIT_T        15
+	NUMLIT_T        10
+	NUMLIT_T        20
+	RPAREN_T        )
+	RPAREN_T        )
+	LPAREN_T        (
+	NEWLINE_T       newline
+	RPAREN_T        )
+  22: )
+	RPAREN_T        )
+  23: 
+  24: (main)
+	LPAREN_T        (
+	IDENT_T         main
+	RPAREN_T        )
+	EOF_T           
+0 errors found in input file

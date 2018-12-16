@@ -1,0 +1,107 @@
+Input file: test4.ss
+   1: ;; Project 3 Test 4
+   2: ;; List operations
+   3: 
+   4: (define (listop_ex1)
+	LPAREN_T        (
+	DEFINE_T        define
+	LPAREN_T        (
+	IDENT_T         listop_ex1
+	RPAREN_T        )
+   5: 	(cons (car '(x y z)) (cdr '(a b c 1 2 3)))
+	LPAREN_T        (
+	CONS_T          cons
+	LPAREN_T        (
+	LISTOP_T        car
+	SQUOTE_T        '
+	LPAREN_T        (
+	IDENT_T         x
+	IDENT_T         y
+	IDENT_T         z
+	RPAREN_T        )
+	RPAREN_T        )
+	LPAREN_T        (
+	LISTOP_T        cdr
+	SQUOTE_T        '
+	LPAREN_T        (
+	IDENT_T         a
+	IDENT_T         b
+	IDENT_T         c
+	NUMLIT_T        1
+	NUMLIT_T        2
+	NUMLIT_T        3
+	RPAREN_T        )
+	RPAREN_T        )
+	RPAREN_T        )
+   6: )
+	RPAREN_T        )
+   7: 			
+   8: (define (listop_ex2)
+	LPAREN_T        (
+	DEFINE_T        define
+	LPAREN_T        (
+	IDENT_T         listop_ex2
+	RPAREN_T        )
+   9: 	(cons (cadr '(x y z)) (cdddr '(a b c 1 2 3)))
+	LPAREN_T        (
+	CONS_T          cons
+	LPAREN_T        (
+	LISTOP_T        cadr
+	SQUOTE_T        '
+	LPAREN_T        (
+	IDENT_T         x
+	IDENT_T         y
+	IDENT_T         z
+	RPAREN_T        )
+	RPAREN_T        )
+	LPAREN_T        (
+	LISTOP_T        cdddr
+	SQUOTE_T        '
+	LPAREN_T        (
+	IDENT_T         a
+	IDENT_T         b
+	IDENT_T         c
+	NUMLIT_T        1
+	NUMLIT_T        2
+	NUMLIT_T        3
+	RPAREN_T        )
+	RPAREN_T        )
+	RPAREN_T        )
+  10: )
+	RPAREN_T        )
+  11: 
+  12: (define (main)
+	LPAREN_T        (
+	DEFINE_T        define
+	LPAREN_T        (
+	IDENT_T         main
+	RPAREN_T        )
+  13: 	(display (listop_ex1)) (newline)
+	LPAREN_T        (
+	DISPLAY_T       display
+	LPAREN_T        (
+	IDENT_T         listop_ex1
+	RPAREN_T        )
+	RPAREN_T        )
+	LPAREN_T        (
+	NEWLINE_T       newline
+	RPAREN_T        )
+  14: 	(display (listop_ex2)) (newline)
+	LPAREN_T        (
+	DISPLAY_T       display
+	LPAREN_T        (
+	IDENT_T         listop_ex2
+	RPAREN_T        )
+	RPAREN_T        )
+	LPAREN_T        (
+	NEWLINE_T       newline
+	RPAREN_T        )
+  15: )
+	RPAREN_T        )
+  16: 
+  17: (main)
+	LPAREN_T        (
+	IDENT_T         main
+	RPAREN_T        )
+	EOF_T           
+0 errors found in input file

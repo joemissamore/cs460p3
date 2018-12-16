@@ -375,7 +375,7 @@ int SyntacticalAnalyzer::stmt_list(string pass)
         errors += stmt("");
 
         /* LOGIC FOR HANDLING ARITHMETIC */
-        if (pass != "" && token != RPAREN_T) // I have this conditional to prevent wierd spacing
+        if (pass != "") // I have this conditional to prevent wierd spacing
             WriteCodeWrapper(0, " " + pass + " ", STMT_LIST_F, "Writing from pass !=");
         else if (token == NUMLIT_T && action_executed && pass == "")
             WriteCodeWrapper(0, " " + action_exec_on_type + " ", STMT_LIST_F, "Writing from 2nd conditional");
@@ -386,10 +386,10 @@ int SyntacticalAnalyzer::stmt_list(string pass)
         }
         /* ****************************** */
 
-        /* SEPERATING IDENTIFIERS /
-        / Test case 7 */
-        if (action_executed_IDENT_T && token != RPAREN_T && token != LPAREN_T){}
-          //            WriteCodeWrapper(0, " , ", STMT_LIST_F, "Writing action_executed_IDENT_T: " + lex->GetLexeme());
+        /* SEPERATING IDENTIFIERS */
+        /* Test case 7 */
+        if (action_executed_IDENT_T && token != RPAREN_T && token != LPAREN_T)
+            WriteCodeWrapper(0, " , ", STMT_LIST_F, "Writing action_executed_IDENT_T: " + lex->GetLexeme());
         else
             action_executed_IDENT_T = false;
         /* ****************************** */
@@ -767,16 +767,14 @@ int SyntacticalAnalyzer::action(string pass) {
 
         case IDENT_T:
             printP2FileUsing("47");
-            WriteCodeWrapper(0, lex->GetLexeme() + "(", ACTION_F);
+	        WriteCodeWrapper(0, lex->GetLexeme() + "(", ACTION_F);
             action_executed_IDENT_T = true;
             token = lex->GetToken();
-            errors += stmt_list(", ");
-            /*
+            errors += stmt_list("");
             if (token != RPAREN_T) {
                 WriteCodeWrapper(0, ", ", ACTION_F);
             }
-            */
-                WriteCodeWrapper(0, ")", ACTION_F);
+	        WriteCodeWrapper(0, ")", ACTION_F);
             break;
 
         case DISPLAY_T:
